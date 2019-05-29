@@ -28,6 +28,7 @@ function Ctx(env::PendulumEnv, mode::Symbol = :human_window)
         viewer = CairoRGBSurface(draw_params.screen_width, draw_params.screen_height)
 
         CairoCtx(draw_params, viewer)
+    #=
     elseif mode == :human_window
         draw_params = PendulumDrawParams()
         viewer = CairoRGBSurface(draw_params.screen_width, draw_params.screen_height)
@@ -43,6 +44,7 @@ function Ctx(env::PendulumEnv, mode::Symbol = :human_window)
         end
 
         GtkCtx(draw_params, canvas, win)
+    =#
     elseif mode == :rgb
         draw_params = PendulumDrawParams()
         viewer = CairoRGBSurface(draw_params.screen_width, draw_params.screen_height)

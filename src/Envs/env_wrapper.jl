@@ -43,7 +43,7 @@ end
 render!(env::EnvWrapper, ctx::AbstractCtx) = render!(env._env, ctx)
 render!(env::EnvWrapper) = render!(env, env._ctx)
 
-Ctx(env::EnvWrapper, mode::Symbol = :human_window) = Ctx(env._env, mode)
+Ctx(env::EnvWrapper, mode::Symbol = :human_pane) = Ctx(env._env, mode)
 
 """
 Returns the observational state of the environment. The original state can
