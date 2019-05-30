@@ -2,6 +2,7 @@
 Gym environments in Julia
 
 [![Build Status](https://travis-ci.org/kraftpunk97/Gym.jl.svg?branch=CI)](https://travis-ci.org/kraftpunk97/Gym.jl)
+
 **`Gym.jl` is a work in progress and in active development. Expect breaking changes for some time.**
 
 **`Gym.jl` requires Julia v1.1**
