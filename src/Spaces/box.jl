@@ -23,7 +23,7 @@ function Box(low::Number, high::Number, shape::Union{Tuple, Array{Int64, 1}}, dt
 
     if low > high
         @warn "low  > high. Swapping values to preserve sanity"
-        (low, high) = (high, low)  # Preserves sanity if low > high
+        (low, high) = (high, low)  # Preserves sanity if low  high
     end
 
     if dtype <: Integer
