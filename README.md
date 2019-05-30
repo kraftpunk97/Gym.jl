@@ -1,5 +1,5 @@
 # Gym.jl
-# [![Build Status](https://travis-ci.org/kraftpunk97/Gym.jl.svg?branch=CI)](https://travis-ci.org/kraftpunk97/Gym.jl)
+[![Build Status](https://travis-ci.org/kraftpunk97/Gym.jl.svg?branch=CI)](https://travis-ci.org/kraftpunk97/Gym.jl)
 
 Gym environments in Julia
 
