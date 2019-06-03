@@ -14,13 +14,15 @@ mutable struct EnvWrapper
     train::Bool
 	reward_threshold::RealOrNothing
 	max_episode_steps::IntOrNothing
+	action_space::Space.AbstractSpace
+	observation_space::Space.AbstractSpace
     _env::AbstractEnv
     _ctx::AbstractCtx
 end
 
 EnvWrapper(env::AbstractEnv, ctx::AbstractCtx, train::Bool=true;
 		   reward_threshold=nothing, max_episode_steps=nothing) =
-EnvWrapper(false, 0, 0, train, reward_threshold, max_episode_steps, env, ctx)
+EnvWrapper(false, 0, 0, train, reward_threshold, max_episode_steps, env.action_space, env.observation_space, env, ctx)
 
 function step!(env::EnvWrapper, a)
     s′, r, done, dict = step!(env._env, a)
