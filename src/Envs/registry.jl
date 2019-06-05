@@ -24,3 +24,12 @@ register("MountainCarContinuous-v0",
          "/classic_control/Continuous-MountainCar.jl",
 		 max_episode_steps=999,
 		 reward_threshold=90.0)
+
+# Algorithmic environments
+#=============================================================================#
+
+register("Copy-v0",
+		 :CopyEnv,
+		 "/algorithmic/Copy.jl",
+		 max_episode_steps=200,
+		 reward_threshold=25.0)
