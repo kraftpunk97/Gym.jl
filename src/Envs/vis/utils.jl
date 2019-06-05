@@ -19,6 +19,9 @@ struct GtkCtx <: AbstractCtx
     win::GtkWindowLeaf
 end
 
+struct NoCtx <: AbstractCtx
+end
+
 function render!(env::AbstractEnv, ctx::CairoCtx)
     drawcanvas!(env, CairoContext(ctx.viewer), ctx.params)
     display(ctx.viewer)
@@ -40,3 +43,5 @@ function render!(env::AbstractEnv, ctx::GtkCtx)
     reveal(ctx.canvas, true)
     return ctx.canvas
 end
+
+function render!(env::AbstractEnv, ctx::NoCtx) end
