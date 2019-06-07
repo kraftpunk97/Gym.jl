@@ -37,7 +37,7 @@ abstract type AlgorithmicEnv <: AbstractEnv end
 abstract type TapeAlgorithmicEnv <: AlgorithmicEnv end
 abstract type GridAlgorithmicEnv <: AlgorithmicEnv end
 
-
+#=
 getstrobs(algoenv::AlgorithmicEnv, pos::Int=-1) = algoenv.charmap[_get_obs(algoenv, pos)]
 
 
@@ -46,21 +46,15 @@ Return the ith character of the target string (or " " if index out of bounds)
 =#
 getstrtarget(algoenv::AlgorithmicEnv, pos::Int) = pos < 1 || length(algoenv.target) <= pos ?
     ' ' : algoenv.charmap[algoenv.target[pos]]
-
+=#
 
 #=
 Called between episodes. Update our running record of episode rewards and,
 if appropriate, 'level up' minimum input length.
 =#
-function checklevelup!(algoenv::AlgorithmicEnv)
+function check_level_up!(algoenv::AlgorithmicEnv)
     push!(algoenv.reward_shortfalls, algoenv.episode_total_reward - length(algoenv.target))
-    # Keep `algoenv.last` number of rewards. If number of rewards is less, then
-    # keep all the rewards.
-    last_elem_idx = length(algoenv.reward_shortfalls) >= algoenv.last ?
-        algoenv.last : length(algoenv.reward_shortfalls)
-    algoenv.reward_shortfalls = algoenv.reward_shortfalls[(end-last_elem_idx+1):end]
-
-    if length(algoenv.reward_shortfalls) == algoenv.last &&
+    if length(algoenv.reward_shortfalls) == algoenv.reward_shortfalls.capacity &&
        minimum(algoenv.reward_shortfalls) >= algoenv.MIN_REWARD_SHORTFALL_FOR_PROMOTION &&
        algoenv.min_length < 30
        algoenv.min_length += 1
@@ -70,7 +64,7 @@ end
 
 
 function reset!(algoenv::AlgorithmicEnv)
-    checklevelup!(algoenv)
+    check_level_up!(algoenv)
     algoenv.last_action = nothing
     algoenv.last_reward = 0
     algoenv.read_head_position = algoenv.READ_HEAD_START
@@ -78,7 +72,7 @@ function reset!(algoenv::AlgorithmicEnv)
     algoenv.episode_total_reward = 0f0
     algoenv.time = 0
     len = rand(0:2) + algoenv.min_length
-    algoenv.input_data = generateinputdata(algoenv, len)
+    algoenv.input_data = generate_input_data(algoenv, len)
     algoenv.target = targetfrominputdata(algoenv)
     _get_obs(algoenv)
 end
@@ -112,7 +106,7 @@ function step!(algoenv::AlgorithmicEnv, action)
         algoenv.write_head_position += 1
         algoenv.write_head_position >= length(algoenv.target) && (done = true)
     end
-    _move!(algoenv, inp_act)
+    move!(algoenv, inp_act)
     # If an agent takes more than this many timesteps, end the episode
     # immediately and return negative reward
     timelimit = length(algoenv.input_data) + length(algoenv.target) + 4
@@ -126,15 +120,17 @@ function step!(algoenv::AlgorithmicEnv, action)
     return (obs, reward, done, Dict())
 end
 
-generateinputdata(tapeenv::TapeAlgorithmicEnv, shape) = [rand(1:tapeenv.base) for _ in 1:shape]
-generateinputdata(gridenv::GridAlgorithmicEnv, shape) = [[rand(1:gridenv.base) for _  in 1:gridenv.rows] for __ in 1:shape]
+generate_input_data(tapeenv::TapeAlgorithmicEnv, shape) = [rand(1:tapeenv.base) for _ in 1:shape]
+#generate_input_data(gridenv::GridAlgorithmicEnv, shape) = [[rand(1:gridenv.base) for _  in 1:gridenv.rows] for __ in 1:shape]
 
-function _move!(tapeenv::TapeAlgorithmicEnv, movement)
+
+function move!(tapeenv::TapeAlgorithmicEnv, movement)
     named = tapeenv.MOVEMENTS[movement[1]]
     tapeenv.read_head_position += named == :right ? 1 : -1
 end
 
-function _move!(gridenv::GridAlgorithmicEnv, movement)
+#=
+function move!(gridenv::GridAlgorithmicEnv, movement)
     named = gridenv.MOVEMENTS[movement]
     x, y = tapenv.read_head_posiion
     if named == :left
@@ -149,10 +145,10 @@ function _move!(gridenv::GridAlgorithmicEnv, movement)
         throw(ArgumentError("Unrecognized direction: $(named)"))
     end
 end
-
+=#
 
 """
-return character under read_head/pos. If the read_head/pos is out-of-bounds, then return null index(0).
+return character under read_head/pos. If the read_head/pos is out-of-bounds, then return null(0).
 """
 _get_obs(algoenv::AlgorithmicEnv) = _get_obs(algoenv, algoenv.read_head_position)
 function _get_obs(tapeenv::TapeAlgorithmicEnv, pos::Integer)
@@ -162,7 +158,7 @@ function _get_obs(tapeenv::TapeAlgorithmicEnv, pos::Integer)
         return [0]
     end
 end
-
+#=
 function _get_obs(gridenv::GridAlgorithmicEnv, pos::Array)
     x, y = pos
     any(idx < 1 for idx in pos) && (return gridenv.base)
@@ -172,3 +168,4 @@ function _get_obs(gridenv::GridAlgorithmicEnv, pos::Array)
         return gridenv.base
     end
 end
+=#
