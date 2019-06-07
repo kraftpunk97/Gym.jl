@@ -9,7 +9,7 @@ Algorithmic environments have the following traits in common:
 Agents control a read head that moves over the input tape. Observations consist
 of the single character currently under the read head. The read head may fall
 off the end of the tape in any direction. When this happens, agents will observe
-a special blank character (with index=env.base) until they get back in bounds.
+a special blank character (with index=0) until they get back in bounds.
 
 Actions consist of 3 sub-actions:
     - Direction to move the read head (left or right, plus up and down for 2-d envs)
@@ -97,7 +97,8 @@ function step!(algoenv::AlgorithmicEnv, action)
     if out_act[1] == 2
         correct = false  # initialising 'correct'
         try
-            correct = pred == algoenv.target[algoenv.write_head_position]
+            write_head_position = algoenv.write_head_position
+            correct = pred == algoenv.target[write_head_position:write_head_position]
         catch BoundsError
             @warn "It looks like you're calling step() even though this " *
             "environement has already returned done=true. You should " *
@@ -150,13 +151,15 @@ function _move!(gridenv::GridAlgorithmicEnv, movement)
 end
 
 
+"""
+return character under read_head/pos. If the read_head/pos is out-of-bounds, then return null index(0).
+"""
 _get_obs(algoenv::AlgorithmicEnv) = _get_obs(algoenv, algoenv.read_head_position)
 function _get_obs(tapeenv::TapeAlgorithmicEnv, pos::Integer)
-    pos < 1 && (return tapeenv.base)
     try
-        return tapeenv.input_data[pos]
+        return [tapeenv.input_data[pos]]
     catch BoundsError
-        return tapeenv.base
+        return [0]
     end
 end
 
