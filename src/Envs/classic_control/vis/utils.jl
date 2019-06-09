@@ -1,6 +1,5 @@
 using Cairo, Gtk, Images, Colors
 
-abstract type AbstractCtx end
 abstract type AbstractDrawParams end
 
 struct CairoCtx <: AbstractCtx
@@ -41,7 +40,6 @@ function render!(env::AbstractEnv, ctx::GtkCtx)
         drawcanvas!(env, getgc(ctx.canvas), ctx.params)
     end
     reveal(ctx.canvas, true)
-    return ctx.canvas
 end
 
-function render!(env::AbstractEnv, ctx::NoCtx) end
+render!(env::AbstractEnv, ctx::NoCtx) = nothing

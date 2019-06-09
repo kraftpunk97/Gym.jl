@@ -1,3 +1,5 @@
+include("utils.jl")
+
 obs(env::PendulumEnv, ::Nothing) = obs(env, [0.0, 0.0])
 obs(env::PendulumEnv, (θ, θ̄)) = Flux.data(θ)
 
@@ -22,7 +24,7 @@ PendulumDrawParams() =
         5f-2       # axle_radius
     )
 
-function Ctx(env::PendulumEnv, mode::Symbol = :human_window)
+function Ctx(env::PendulumEnv, mode::Symbol=:no_render)
     if mode == :human_pane
         draw_params = PendulumDrawParams()
         viewer = CairoRGBSurface(draw_params.screen_width, draw_params.screen_height)
@@ -47,7 +49,9 @@ function Ctx(env::PendulumEnv, mode::Symbol = :human_window)
         draw_params = PendulumDrawParams()
         viewer = CairoRGBSurface(draw_params.screen_width, draw_params.screen_height)
 
-        RGBCtx(draw_params, viewer)
+        RGBCtx(draw_params, viewer
+    elseif mode == :no_render
+        return
     else
         error("Unrecognized mode in Ctx(): $(mode)")
     end

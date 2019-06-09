@@ -1,8 +1,7 @@
 import Flux.testmode!
 
 abstract type AbstractEnv end
-
-include("vis/utils.jl")
+abstract type AbstractCtx end
 
 IntOrNothing  = Union{Int,  Nothing}
 RealOrNothing = Union{Real, Nothing}
@@ -45,7 +44,7 @@ end
 render!(env::EnvWrapper, ctx::AbstractCtx) = render!(env._env, ctx)
 render!(env::EnvWrapper) = render!(env, env._ctx)
 
-Ctx(env::EnvWrapper, mode::Symbol = :human_window) = Ctx(env._env, mode)
+Ctx(env::EnvWrapper) = Ctx(env._env, env.render_mode)
 
 """
 Returns the observational state of the environment. The original state can

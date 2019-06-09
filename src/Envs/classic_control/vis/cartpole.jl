@@ -1,3 +1,5 @@
+include("utils.jl")
+
 obs(env::CartPoleEnv, ::Nothing) = obs(env, zeros(4))
 obs(env::CartPoleEnv, (x, x̄, θ, θ̄)) =
     Dict("x" => x, "theta"=>θ)
@@ -27,7 +29,7 @@ CartPoleDrawParams() =
         30f0       # cart_height
     )
 
-function Ctx(env::CartPoleEnv, mode::Symbol = :human_window)
+function Ctx(env::CartPoleEnv, mode::Symbol=:no_render)
     if mode == :human_pane
         draw_params = CartPoleDrawParams()
         viewer = CairoRGBSurface(draw_params.screen_width, draw_params.screen_height)
@@ -53,6 +55,8 @@ function Ctx(env::CartPoleEnv, mode::Symbol = :human_window)
         viewer = CairoRGBSurface(draw_params.screen_width, draw_params.screen_height)
 
         RGBCtx(draw_params, viewer)
+    elseif mode == :no_render
+        return NoCtx()
     else
         error("Unrecognized mode in Ctx(): $(mode)")
     end
