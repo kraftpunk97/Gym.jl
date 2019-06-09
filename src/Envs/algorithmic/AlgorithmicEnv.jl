@@ -37,62 +37,52 @@ abstract type AlgorithmicEnv <: AbstractEnv end
 abstract type TapeAlgorithmicEnv <: AlgorithmicEnv end
 abstract type GridAlgorithmicEnv <: AlgorithmicEnv end
 
-#=
-getstrobs(algoenv::AlgorithmicEnv, pos::Int=-1) = algoenv.charmap[_get_obs(algoenv, pos)]
-
-
-#=
-Return the ith character of the target string (or " " if index out of bounds)
-=#
-getstrtarget(algoenv::AlgorithmicEnv, pos::Int) = pos < 1 || length(algoenv.target) <= pos ?
-    ' ' : algoenv.charmap[algoenv.target[pos]]
-=#
+include("vis/algorithmicenv.jl")
 
 #=
 Called between episodes. Update our running record of episode rewards and,
 if appropriate, 'level up' minimum input length.
 =#
-function check_level_up!(algoenv::AlgorithmicEnv)
-    push!(algoenv.reward_shortfalls, algoenv.episode_total_reward - length(algoenv.target))
-    if length(algoenv.reward_shortfalls) == algoenv.reward_shortfalls.capacity &&
-       minimum(algoenv.reward_shortfalls) >= algoenv.MIN_REWARD_SHORTFALL_FOR_PROMOTION &&
-       algoenv.min_length < 30
-       algoenv.min_length += 1
-       algoenv.reward_shortfalls = []
+function check_level_up!(env::AlgorithmicEnv)
+    push!(env.reward_shortfalls, env.episode_total_reward - length(env.target))
+    if length(env.reward_shortfalls) == env.reward_shortfalls.capacity &&
+       minimum(env.reward_shortfalls) >= env.MIN_REWARD_SHORTFALL_FOR_PROMOTION &&
+       env.min_length < 30
+       env.min_length += 1
+       env.reward_shortfalls = CircularBuffer{Float32}(10)
    end
 end
 
 
-function reset!(algoenv::AlgorithmicEnv)
-    check_level_up!(algoenv)
-    algoenv.last_action = nothing
-    algoenv.last_reward = 0
-    algoenv.read_head_position = algoenv.READ_HEAD_START
-    algoenv.write_head_position = 1
-    algoenv.episode_total_reward = 0f0
-    algoenv.time = 0
-    len = rand(0:2) + algoenv.min_length
-    algoenv.input_data = generate_input_data(algoenv, len)
-    algoenv.target = targetfrominputdata(algoenv)
-    _get_obs(algoenv)
+function reset!(env::AlgorithmicEnv)
+    check_level_up!(env)
+    env.last_action = nothing
+    env.last_reward = 0
+    env.read_head_position = env.READ_HEAD_START
+    env.write_head_position = 1
+    env.episode_total_reward = 0f0
+    env.time = 0
+    len = rand(0:2) + env.min_length
+    generate_input_data!(env, len)
+    target_from_input_data!(env)
+    _get_obs(env)
 end
 
 
-function step!(algoenv::AlgorithmicEnv, action)
-    @assert action ∈ algoenv.action_space "$(action)"
-    algoenv.last_action = action
+function step!(env::AlgorithmicEnv, action)
+    @assert action ∈ env.action_space "$(action) is not a valid action for this environment."
+    env.last_action = action
     inp_act = action[1:1]
     out_act = action[2:2]
     pred = action[3:3]
     done = false
     reward = 0f0
-    algoenv.time += 1  # Clock ticks one time
-    @assert 1 <= algoenv.write_head_position  # Ensure that we have someplace to write to
+    env.time += 1  # Clock ticks one time
+    @assert 1 <= env.write_head_position  # Ensure that we have someplace to write to
     if out_act[1] == 2
         correct = false  # initialising 'correct'
         try
-            write_head_position = algoenv.write_head_position
-            correct = pred == algoenv.target[write_head_position:write_head_position]
+            correct = pred[1] == env.target[env.write_head_position]
         catch BoundsError
             @warn "It looks like you're calling step() even though this " *
             "environement has already returned done=true. You should " *
@@ -103,36 +93,37 @@ function step!(algoenv::AlgorithmicEnv, action)
         reward = correct ? 1f0 : -5f-1  # Calculate reward.
         !correct && (done = true)  # Bail immediately if wrong character is written.
 
-        algoenv.write_head_position += 1
-        algoenv.write_head_position >= length(algoenv.target) && (done = true)
+        env.write_head_position += 1
+        env.write_head_position > length(env.target) && (done = true)
     end
-    move!(algoenv, inp_act)
+    move!(env, inp_act)
     # If an agent takes more than this many timesteps, end the episode
     # immediately and return negative reward
-    timelimit = length(algoenv.input_data) + length(algoenv.target) + 4
-    if algoenv.time > timelimit
+    timelimit = time_limit(env)
+    if env.time > timelimit
         reward = -1f0
         done = true
     end
-    obs = _get_obs(algoenv)
-    algoenv.last_reward = reward
-    algoenv.episode_total_reward += reward
+    obs = _get_obs(env)
+    env.last_reward = reward
+    env.episode_total_reward += reward
     return (obs, reward, done, Dict())
 end
 
-generate_input_data(tapeenv::TapeAlgorithmicEnv, shape) = [rand(1:tapeenv.base) for _ in 1:shape]
-#generate_input_data(gridenv::GridAlgorithmicEnv, shape) = [[rand(1:gridenv.base) for _  in 1:gridenv.rows] for __ in 1:shape]
+generate_input_data!(env::TapeAlgorithmicEnv, size_) =
+    env.input_data = [rand(1:env.base) for _ in 1:size_]
+generate_input_data!(env::GridAlgorithmicEnv, size_) =
+    env.input_data = [[rand(1:env.base) for _  in 1:env.rows] for __ in 1:size_]
 
 
-function move!(tapeenv::TapeAlgorithmicEnv, movement)
-    named = tapeenv.MOVEMENTS[movement[1]]
-    tapeenv.read_head_position += named == :right ? 1 : -1
+function move!(env::TapeAlgorithmicEnv, movement)
+    named = env.MOVEMENTS[movement[1]]
+    env.read_head_position += named == :right ? 1 : -1
 end
 
-#=
-function move!(gridenv::GridAlgorithmicEnv, movement)
-    named = gridenv.MOVEMENTS[movement]
-    x, y = tapenv.read_head_posiion
+function move!(env::GridAlgorithmicEnv, movement)
+    named = env.MOVEMENTS[movement[1]]
+    x, y = env.read_head_posiion
     if named == :left
         x -= 1
     elseif named == :right
@@ -144,28 +135,27 @@ function move!(gridenv::GridAlgorithmicEnv, movement)
     else
         throw(ArgumentError("Unrecognized direction: $(named)"))
     end
+    env.read_head_posiion = [x, y]
 end
-=#
 
-"""
-return character under read_head/pos. If the read_head/pos is out-of-bounds, then return null(0).
-"""
-_get_obs(algoenv::AlgorithmicEnv) = _get_obs(algoenv, algoenv.read_head_position)
-function _get_obs(tapeenv::TapeAlgorithmicEnv, pos::Integer)
+
+# return character under read_head/pos. If the read_head/pos is out-of-bounds, then return null(0).
+_get_obs(env::AlgorithmicEnv) = _get_obs(env, env.read_head_position)
+function _get_obs(env::TapeAlgorithmicEnv, pos::Integer)
     try
-        return [tapeenv.input_data[pos]]
+        return [env.input_data[pos]]
     catch BoundsError
-        return [0]
+        return [env.base + 1]
     end
 end
-#=
-function _get_obs(gridenv::GridAlgorithmicEnv, pos::Array)
+
+function _get_obs(env::GridAlgorithmicEnv, pos::Array)
     x, y = pos
-    any(idx < 1 for idx in pos) && (return gridenv.base)
     try
-        return gridenv.input_data[x][y]
+        return [env.input_data[x][y]]
     catch BoundsError
-        return gridenv.base
+        return [env.base + 1]
     end
 end
-=#
+
+time_limit(env::TapeAlgorithmicEnv) = length(env.input_data) + length(env.target) + 4

@@ -33,3 +33,27 @@ register("Copy-v0",
 		 "/algorithmic/Copy.jl",
 		 max_episode_steps=200,
 		 reward_threshold=25.0)
+
+register("RepeatCopy-v0",
+		 :RepeatCopyEnv,
+		 "/algorithmic/RepeatCopy.jl",
+		 max_episode_steps=200,
+		 reward_threshold=75.0)
+
+register("ReversedAddition-v0",
+		 :ReversedAdditionEnv,
+		 "/algorithmic/ReversedAddition.jl",
+		 max_episode_steps=200,
+		 reward_threshold=25.0)
+
+register("DuplicatedInput-v0",
+		 :DuplicatedInputEnv,
+		 "/algorithmic/DuplicatedInput.jl",
+		 max_episode_steps=200,
+		 reward_threshold=25.0)
+
+register("Reverse-v0",
+		 :ReverseEnv,
+		 "/algorithmic/Reverse.jl",
+		 max_episode_steps=200,
+		 reward_threshold=25.0)

@@ -2,6 +2,7 @@
 Task is to copy content from the input tape to
 the output tape. http://arxiv.org/abs/1511.07275
 """
+
 using DataStructures: CircularBuffer
 include("AlgorithmicEnv.jl")
 
@@ -38,14 +39,14 @@ function CopyEnv(base::Int=5, chars::Bool=true)
     CopyEnv(-1f0, # MIN_REWARD_SHORTFALL_FOR_PROMOTION
             base,
             0f0, # episode_total_reward
-            CircularBuffer{}(10),  # reward_shortfalls
+            CircularBuffer{Float32}(10),  # reward_shortfalls
             push!([starting_char+i for i=0:base-1], ' '),  # charmap
             2,  # starting min_length
             TupleSpace([Discrete(2), Discrete(2), Discrete(base)]),  # action_space
             Discrete(base+1),  # observation_space
             (:left, :right), 1,  # MOVEMENTS and READ_HEAD_START
-            Array{(chars ? Char : Int), 1}(), # target
-            Array{(chars ? Char : Int), 1}(), # input_data
+            Array{(chars ? Char : Int8), 1}(), # target
+            Array{(chars ? Char : Int8), 1}(), # input_data
             0,  # time
             1,  # read_head_posiion
             1,  # write_head_position
@@ -53,8 +54,4 @@ function CopyEnv(base::Int=5, chars::Bool=true)
             0.0)  # last_reward
 end
 
-targetfrominputdata(cpenv::CopyEnv) = cpenv.input_data
-
-function Ctx(cpenv::CopyEnv, render_mode::Symbol=:human_window)
-    return NoCtx()
-end
+target_from_input_data!(env::CopyEnv) = env.target = env.input_data
