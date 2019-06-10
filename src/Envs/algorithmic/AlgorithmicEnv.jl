@@ -90,7 +90,7 @@ function step!(env::AlgorithmicEnv, action)
             "further steps are undefined behaviour."
             correct = false
         end
-        reward = correct ? 1f0 : -5f-1  # Calculate reward.
+        reward += correct ? 1f0 : -5f-1  # Calculate reward.
         !correct && (done = true)  # Bail immediately if wrong character is written.
 
         env.write_head_position += 1
@@ -101,7 +101,7 @@ function step!(env::AlgorithmicEnv, action)
     # immediately and return negative reward
     timelimit = time_limit(env)
     if env.time > timelimit
-        reward = -1f0
+        reward = 0reward - 1f0
         done = true
     end
     obs = _get_obs(env)
