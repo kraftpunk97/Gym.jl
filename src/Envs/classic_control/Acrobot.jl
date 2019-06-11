@@ -7,7 +7,7 @@ Credit: Alborz Geramifard, Robert H. Klein, Christoph Dann,
 License: "BSD 3-Clause"
 Author: "Christoph Dann <cdann@cdann.de>"
 """
-mutable struct AcrobotEnv
+mutable struct AcrobotEnv <: AbstractEnv
     viewer
     observation_space::Box
     action_space::Discrete
@@ -27,6 +27,7 @@ mutable struct AcrobotEnv
     book_or_nips::String
 end
 
+include("vis/acrobot.jl")
 
 function AcrobotEnv()
     dt = 2f-1
@@ -109,7 +110,7 @@ end
 
 function _terminal(env::AcrobotEnv)
     s = env.state
-    return (cos.(s[1:1]).-cos.(s[2:2].+s[1:1])) .> 1f0
+    return cos(s[1]) - cos(s[2] + s[1]) > 1f0
 end
 
 
@@ -154,14 +155,14 @@ function _dsdt(env::AcrobotEnv, s_augmented, t)
     return vcat(dtheta1, dtheta2, ddtheta1, ddtheta2, 0f1)
 end
 
-"""
+#=
 x : value to be wrapped\n
 m : minimum possible value in range\n
 M : maximum possible value in range\n
 Wraps ``x`` so m <= x <= M; but unlike ``bound()`` which truncates,
 ``wrap()`` wraps x around the coordinate system defined by m, M.\n
 For example, m = -180, M = 180 (degrees), x = 360 --> returns 0.
-"""
+=#
 function wrap(x, m, M)
     diff = M - m
     while all(x .> M)
@@ -173,20 +174,17 @@ function wrap(x, m, M)
     return x
 end
 
-"""
-returns m <= x <= M
-"""
+# returns m <= x <= M
 bound(x, m, M) = min.(max.(x, m), M)
 
-"""
-
+#=
 y0 : initial state vector
 t : sample times
 derivs : returns the derivative of the system and has the
          signature ``dy = derivs(yi, ti)``
 args : additional arguments passed to the derivative function
 kwargs : additional keyword arguments passed to the derivative function
-"""
+=#
 function rk4(env::AcrobotEnv, derivs, y0, t, args...; kwargs...)
     yout = param(zeros(Float32, length(t), length(y0)))
     yout.data[1, :] = y0.data
