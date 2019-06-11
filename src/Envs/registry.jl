@@ -31,6 +31,13 @@ register("MountainCar-v0",
 		 max_episode_steps=200,
 		 reward_threshold=110.0)
 
+register("Acrobot-v0",
+		 :AcrobotEnv,
+		 "/classic_control/Acrobot.jl",
+		 max_episode_steps=500,
+		 reward_threshold=100.0)
+
+
 # Algorithmic environments
 #=============================================================================#
 
