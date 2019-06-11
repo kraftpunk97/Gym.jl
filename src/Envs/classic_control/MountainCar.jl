@@ -17,8 +17,10 @@ mutable struct MountainCarEnv <: AbstractEnv
     state
 end
 
-function MountainCarEnv
-    min_action = 1.2f0
+include("vis/mountaincar.jl")
+
+function MountainCarEnv()
+    min_position = -1.2f0
     max_position = 0.6f0
     max_speed = 0.07f0
     goal_position = 0.5f0
@@ -31,8 +33,9 @@ function MountainCarEnv
 
     action_space = Discrete(5)
     observation_space = Box(low, high, Float32)
+    state
 
-    MountainCarEnv(min_action, max_position, max_speed, goal_position,
+    MountainCarEnv(min_position, max_position, max_speed, goal_position,
                    force, gravity,
                    low, high,
                    action_space, observation_space, nothing)
@@ -42,23 +45,23 @@ function step!(env::MountainCarEnv, action)
     @assert action ∈ env.action_space "$(action) is unavailable for this environment."
 
     position, velocity = env.state[1:1], env.state[2:2]
-    v = velocity .+ (action.-2)*force .+ cos.(3position)*(-env.gravity)
+    v = velocity .+ (action.-2)*env.force .+ cos.(3position)*(-env.gravity)
     velocity_ = clamp.(v, -env.max_speed, env.max_speed)
-    x = position .+ velcity_
+    x = position .+ velocity_
     position_  = clamp.(x, env.min_position, env.max_position)
     if all(position_ .== env.min_position) && all(velocity_ .< 0)
         velocity_ = 0f0velocity_
     end
 
     done = all(position_ .≥ env.goal_position)
-    reward = [-1f0]
+    reward = -1f0
 
     env.state = vcat(position_, velocity_)
     return env.state, reward, done, Dict()
 end
 
-function reset!(env::Continuous_MountainCarEnv)
+function reset!(env::MountainCarEnv)
     env.state = param([2f-1rand(Float32) - 6f-1, 0f0])
 end
 
-Base.show(io::IO, env::Continuous_MountainCarEnv) = print(io, "MountainCarEnv")
+Base.show(io::IO, env::MountainCarEnv) = print(io, "MountainCarEnv")

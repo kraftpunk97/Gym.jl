@@ -56,7 +56,7 @@ function Ctx(env::CartPoleEnv, mode::Symbol=:no_render)
 
         RGBCtx(draw_params, viewer)
     elseif mode == :no_render
-        return NoCtx()
+        NoCtx()
     else
         error("Unrecognized mode in Ctx(): $(mode)")
     end

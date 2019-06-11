@@ -14,6 +14,8 @@ mutable struct Continuous_MountainCarEnv <: AbstractEnv
     observation_space::Box
 end
 
+include("vis/mountaincar.jl")
+
 function Continuous_MountainCarEnv()
     min_action    =  -1f0
     max_action    =   1f0
