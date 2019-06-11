@@ -49,7 +49,7 @@ function Ctx(env::PendulumEnv, mode::Symbol=:no_render)
         draw_params = PendulumDrawParams()
         viewer = CairoRGBSurface(draw_params.screen_width, draw_params.screen_height)
 
-        RGBCtx(draw_params, viewer
+        RGBCtx(draw_params, viewer)
     elseif mode == :no_render
         return
     else
@@ -66,6 +66,9 @@ function drawcanvas!(env::PendulumEnv, viewer::CairoContext, params::PendulumDra
     # Move to center of screen
     translate_dist = Pair(params.screen_width/2, params.screen_height/2)
     translate(viewer, translate_dist.first, translate_dist.second)
+
+    # Rotate
+    rotate(viewer, env.state[2] * env.dt)
 
     # Arm Start Circle
     set_source_rgb(viewer, 8f-1, 3f-1, 3f-1)
@@ -89,9 +92,7 @@ function drawcanvas!(env::PendulumEnv, viewer::CairoContext, params::PendulumDra
     circle(viewer, 0, 0, params.scale * params.axle_radius)
     fill(viewer)
 
-    # Rotate
-    rotate(viewer, env.state[2] * env.dt)
-
-    # Undo translation
+    # Undo translation and rotation
+    rotate(viewer, -env.state[2] * env.dt)
     translate(viewer, -translate_dist.first, -translate_dist.second)
 end
