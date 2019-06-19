@@ -1,14 +1,13 @@
-using Flux, Gym
+using Flux, Gym, Printf
 using Flux.Optimise: Optimiser
 using Flux.Tracker: data
 using Statistics: mean
 using DataStructures: CircularBuffer
 using Distributions: sample
-using Printf
 #using CuArrays
 
 # Load game environment
-env = make("CartPole-v0", :human_pane)
+env = make("CartPole-v0")
 reset!(env)
 
 # ----------------------------- Parameters -------------------------------------
@@ -40,7 +39,7 @@ loss(x, y) = Flux.mse(model(x |> gpu), y)
 
 opt = Optimiser(ADAM(η), InvDecay(η_decay))
 
-# ----------------------------- Helper Functions -------------------------------
+# ----------------------------- HelperFunctions -------------------------------
 
 get_ϵ(e) = max(ϵ_MIN, min(ϵ, 1f0 - log10(e * ϵ_DECAY)))
 
@@ -80,19 +79,15 @@ function replay()
 end
 
 function episode!(env, train=true, draw=false)
-  done = false
-  total_reward = 0f0
-  while !done
+  reset!(env)
+  while !game_over(env)
     draw && render!(env)
     s = env._env.state
-    a = action(s, train)
+    a = action(s, trainable(env))
     s′, r, done, _ = step!(env, a)
-    total_reward += r
-    train && remember(s, a, r, s′, done)
+    trainable(env) && remember(s, a, r, s′, done)
     draw && sleep(0.01)
   end
-
-  total_reward
 end
 
 # ------------------------------ Training --------------------------------------
@@ -102,10 +97,9 @@ scores = CircularBuffer{Float32}(100)
 
 while true
   global e
-  reset!(env)
-  total_reward = episode!(env)
-  push!(scores, total_reward)
-  print("Episode: $e | Score: $total_reward ")
+  episode!(env)
+  push!(scores, env.total_reward)
+  print("Episode: $e | Score: $(env.total_reward) ")
   last_100_mean = mean(scores)
   print("Last 100 episodes mean score: $(@sprintf "%6.2f" last_100_mean)")
   if last_100_mean > 195
@@ -118,13 +112,14 @@ while true
 end
 
 # -------------------------------- Testing -------------------------------------
-
+#=
 ee = 1
 
 while true
   global ee
   reset!(env)
-  total_reward = episode!(env, false, true)
+  total_reward = episode!(env, false, false)
   println("Episode: $ee | Score: $total_reward")
   ee += 1
 end
+=#
