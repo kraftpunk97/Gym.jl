@@ -4,7 +4,7 @@ abstract type AbstractEnv end
 abstract type AbstractCtx end
 
 IntOrNothing  = Union{Int,  Nothing}
-RealOrNothing = Union{Real, Nothing}
+RealOrNothing = Union{Float32, Nothing}
 
 mutable struct EnvWrapper
     done::Bool
