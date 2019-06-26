@@ -41,12 +41,12 @@ function EnvSpec(id, entry_point; trials=100, reward_threshold=nothing,
 end
 
 function _make(spec::EnvSpec, render_mode::Symbol; kwargs...)
-    _kwargs = deepcopy(spec.kwargs)
-    merge!(_kwargs, Dict(kwargs))
+    kwargs_ = deepcopy(spec.kwargs)
+    merge!(kwargs_, Dict(kwargs))
 
     env_var = load(spec.entry_point, spec.id)
     ctx_var = load(spec.entry_point, :Ctx)
-    env = Base.invokelatest(env_var)
+    env = Base.invokelatest(env_var; kwargs_...)
     ctx = Base.invokelatest(ctx_var, env, render_mode)
     env, ctx, spec.reward_threshold, spec.max_episode_steps
 end
