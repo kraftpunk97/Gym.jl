@@ -1,4 +1,4 @@
-using .Space: Discrete, Box
+using GymSpaces: Discrete, Box
 
 mutable struct MountainCarEnv <: AbstractEnv
     min_position::Float32

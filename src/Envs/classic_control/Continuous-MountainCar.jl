@@ -1,4 +1,4 @@
-using .Space: Box
+using GymSpaces: Box
 
 mutable struct Continuous_MountainCarEnv <: AbstractEnv
     min_action::Float32

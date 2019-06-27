@@ -13,8 +13,8 @@ mutable struct EnvWrapper
     train::Bool
 	reward_threshold::RealOrNothing
 	max_episode_steps::IntOrNothing
-	action_space::Space.AbstractSpace
-	observation_space::Space.AbstractSpace
+	action_space::GymSpaces.AbstractSpace
+	observation_space::GymSpaces.AbstractSpace
     _env::AbstractEnv
     _ctx::AbstractCtx
 end

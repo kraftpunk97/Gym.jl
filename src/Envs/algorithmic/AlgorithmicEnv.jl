@@ -1,4 +1,4 @@
-using .Space: TupleSpace, Discrete
+using GymSpaces: TupleSpace, Discrete
 
 #=
 Algorithmic environments have the following traits in common:

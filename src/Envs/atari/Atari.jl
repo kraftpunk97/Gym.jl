@@ -1,4 +1,4 @@
-using .Space: Box, Discrete
+using GymSpaces: Box, Discrete
 using ArcadeLearningEnvironment
 
 setLoggerMode!(:error)  # Only log errors

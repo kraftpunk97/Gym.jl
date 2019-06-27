@@ -4,9 +4,8 @@ using Flux
 using Flux.Tracker
 
 
-#Spaces
-include("Spaces/Space.jl")
-using .Space
+# GymSpaces exports
+using GymSpaces
 export sample
 
 include("Envs/registry.jl")

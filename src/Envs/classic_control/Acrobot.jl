@@ -1,4 +1,4 @@
-using .Space: Box, Discrete
+using GymSpace: Box, Discrete
 
 """
 Copyright 2013, RLPy http://acl.mit.edu/RLPy

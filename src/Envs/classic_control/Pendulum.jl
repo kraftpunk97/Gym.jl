@@ -1,4 +1,4 @@
-using .Space: Box
+using GymSpaces: Box
 
 mutable struct PendulumEnv <: AbstractEnv
     max_speed::Float32

@@ -18,6 +18,12 @@ git-tree-sha1 = "53d8fec4f662088c1202530e338a11a919407f3b"
 uuid = "79e6a3ab-5dfb-504d-930d-738a2a938a0e"
 version = "0.4.2"
 
+[[ArcadeLearningEnvironment]]
+deps = ["BinDeps", "Compat", "Libdl"]
+git-tree-sha1 = "6e4e7ed40b01c41ae4a27902b864268cc41d3a5f"
+uuid = "b7f77d8d-088d-5e02-8ac0-89aab2acc977"
+version = "0.2.0"
+
 [[AxisAlgorithms]]
 deps = ["LinearAlgebra", "Random", "SparseArrays", "WoodburyMatrices"]
 git-tree-sha1 = "a4d07a1c313392a77042855df46c5f534076fab9"
@@ -213,6 +219,14 @@ git-tree-sha1 = "b4c6c9848a711cf4a400fb74b54c67073471b713"
 uuid = "4c0ca9eb-093a-5379-98c5-f87ac0bbbf44"
 version = "0.17.0"
 
+[[GymSpaces]]
+deps = ["DataStructures"]
+git-tree-sha1 = "9e46de58537fa4ee8bbb57daf12d43e6e35abab8"
+repo-rev = "master"
+repo-url = "https://github.com/kraftpunk97/GymSpaces.jl"
+uuid = "4896a6fa-884d-11e9-35a0-9763e69c01ff"
+version = "0.1.0"
+
 [[HTTPClient]]
 deps = ["Compat", "LibCURL"]
 git-tree-sha1 = "161d5776ae8e585ac0b8c20fb81f17ab755b3671"
@@ -227,9 +241,9 @@ version = "0.7.1"
 
 [[IRTools]]
 deps = ["InteractiveUtils", "MacroTools", "Test"]
-git-tree-sha1 = "42b54182e1764f908636157353825707c1aab764"
+git-tree-sha1 = "a9b1fc7745ae4745a634bbb6d1cb7fd64e37248a"
 uuid = "7869d1d1-7146-5819-86e3-90919afe41df"
-version = "0.2.1"
+version = "0.2.2"
 
 [[IdentityRanges]]
 deps = ["OffsetArrays", "Test"]
@@ -406,10 +420,9 @@ uuid = "77ba4419-2d1f-58cd-9bb1-8ffee604a2e3"
 version = "0.3.2"
 
 [[OffsetArrays]]
-deps = ["DelimitedFiles"]
-git-tree-sha1 = "49a6d9b5b3dedec18035e4d97ce77e2b2a182c05"
+git-tree-sha1 = "1af2f79c7eaac3e019a0de41ef63335ff26a0a57"
 uuid = "6fe1bfb0-de20-5000-8ca7-80f57d26f881"
-version = "0.11.0"
+version = "0.11.1"
 
 [[OrderedCollections]]
 deps = ["Random", "Serialization", "Test"]

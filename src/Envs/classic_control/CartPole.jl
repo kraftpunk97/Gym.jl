@@ -1,4 +1,4 @@
-using .Space: Box, Discrete
+using GymSpaces: Box, Discrete
 
 mutable struct CartPoleEnv <: AbstractEnv
     gravity::Float32
