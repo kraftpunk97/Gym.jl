@@ -50,7 +50,22 @@ function step!(env::AtariEnv, action)
     return ob, reward, ArcadeLearningEnvironment.game_over(env.ale), Dict(:ale_lives => lives(env.ale))
 end
 
-_get_obs(env::AtariEnv) = env.obs_type == :ram ? getRAM(env.ale) : getScreenRGB(env.ale)
+
+function get_preprocessed_RGB(env::AtariEnv)
+    # getScreenRGB returns an `Array{UInt8, 1}`, which needs to be converted to
+    # an `Array{UInt8, 3}`.
+    screen_grab = getScreenRGB(env.ale)
+    w, h = getScreenWidth(env.ale), getScreenHeight(env.ale)
+
+    r_screen_grab = screen_grab[1:3:end] |> (channel) -> reshape(channel, w, h) |> transpose |> Array
+    g_screen_grab = screen_grab[2:3:end] |> (channel) -> reshape(channel, w, h) |> transpose |> Array
+    b_screen_grab = screen_grab[3:3:end] |> (channel) -> reshape(channel, w, h) |> transpose |> Array
+
+    cat(r_screen_grab, g_screen_grab, b_screen_grab; dims=3)
+end
+
+_get_obs(env::AtariEnv) = env.obs_type == :ram ? getRAM(env.ale) : get_preprocessed_RGB(env)
+
 
 function reset!(env::AtariEnv)
     reset_game(env.ale)

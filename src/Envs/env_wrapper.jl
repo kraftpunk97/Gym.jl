@@ -3,8 +3,8 @@ import Flux.testmode!
 abstract type AbstractEnv end
 abstract type AbstractCtx end
 
-IntOrNothing  = Union{Int,  Nothing}
-RealOrNothing = Union{Float32, Nothing}
+IntOrNothing  = Union{Integer,  Nothing}
+RealOrNothing = Union{Real, Nothing}
 
 mutable struct EnvWrapper
     done::Bool
@@ -22,7 +22,8 @@ end
 
 EnvWrapper(env::AbstractEnv, ctx::AbstractCtx, train::Bool=true;
 		   reward_threshold=nothing, max_episode_steps=nothing) =
-EnvWrapper(false, 0, 0, train, reward_threshold, max_episode_steps, env, ctx, false)
+EnvWrapper(false, 0, 0, train, reward_threshold, max_episode_steps, env.action_space,
+ 			env.observation_space, env, ctx, false)
 
 function step!(env::EnvWrapper, a)
 	@assert env.reset_called_first "Cannot call step!(::EnvWrapper, ::Any) before calling reset!(::EnvWrapper)"
