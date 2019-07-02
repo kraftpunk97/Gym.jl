@@ -56,17 +56,4 @@ function render!(env::AtariEnv, ctx::AtariGtkCtx)
     end
 end
 
-function render!(env::AtariEnv, ctx::AtariRGBCtx)
-
-    # getScreenRGB returns a 1D array. We extract the values of each channel, reshape them
-    # into 2D matricies, and concatenate them
-    screen_grab = getScreenRGB(env.ale)
-
-    w, h = getScreenWidth(env.ale), getScreenHeight(env.ale)
-
-    r_screen_grab = screen_grab[1:3:end] |> (channel) -> reshape(channel, w, h) |> transpose |> Array
-    g_screen_grab = screen_grab[2:3:end] |> (channel) -> reshape(channel, w, h) |> transpose |> Array
-    b_screen_grab = screen_grab[3:3:end] |> (channel) -> reshape(channel, w, h) |> transpose |> Array
-
-    cat(r_screen_grab, g_screen_grab, b_screen_grab; dims=3)
-end
+render!(env::AtariEnv, ctx::AtariRGBCtx) = get_preprocessed_RGB(env)

@@ -18,7 +18,7 @@ include("vis/utils.jl")
 function AtariEnv( ; game_path::String, obs_type::Symbol=:ram, frameskip::Union{Int, UnitRange{Int}}=2:5,
     repeat_action_probability::AbstractFloat=0f0, full_action_space::Bool=false)
 
-    @assert obs_type ∈ (:ram, :image) "Invalid observation type. Choose either :ram or :image"
+    @assert obs_type ∈ (:ram, :color, :grey) "Invalid observation type. Choose either :ram, :image or :grey"
     @assert isa(repeat_action_probability, AbstractFloat) || isa(repeat_action_probability, Integer) "Invalid repeat_action_probability"
 
     ale = ALE_new()
@@ -57,14 +57,25 @@ function get_preprocessed_RGB(env::AtariEnv)
     screen_grab = getScreenRGB(env.ale)
     w, h = getScreenWidth(env.ale), getScreenHeight(env.ale)
 
-    r_screen_grab = screen_grab[1:3:end] |> (channel) -> reshape(channel, w, h) |> transpose |> Array
-    g_screen_grab = screen_grab[2:3:end] |> (channel) -> reshape(channel, w, h) |> transpose |> Array
-    b_screen_grab = screen_grab[3:3:end] |> (channel) -> reshape(channel, w, h) |> transpose |> Array
+    screen_grab = reshape(screen_grab, 3, w, h)
 
-    cat(r_screen_grab, g_screen_grab, b_screen_grab; dims=3)
+    # This step is neccessay because the image we recieve is row major
+    screen_grab = permutedims(screen_grab, [3, 2, 1])
+    return screen_grab
 end
 
-_get_obs(env::AtariEnv) = env.obs_type == :ram ? getRAM(env.ale) : get_preprocessed_RGB(env)
+function get_preprocessed_greyscale(env::AtariEnv)
+    screen_grab = getScreenGrayscale(env.ale) ./ 255f0
+    w, h = getScreenWidth(env.ale), getScreenHeight(env.ale)
+
+    screen_grab = reshape(screen_grab, w, h)
+
+    return permutedims(screen_grab, [2, 1])
+end
+
+_get_obs(env::AtariEnv) = env.obs_type == :ram ? getRAM(env.ale) :
+                            (env.obs_type == :color ? get_preprocessed_RGB(env) :
+                                get_preprocessed_greyscale(env))
 
 
 function reset!(env::AtariEnv)
