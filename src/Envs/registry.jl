@@ -86,11 +86,11 @@ games_list = ["adventure", "air_raid", "alien", "amidar", "assault", "asterisk",
 			  "up_n_down", "venture", "video_pinball", "wizard_of_wor", "yars_revenge", "zaxxon"]
 
 for game ∈ games_list
-	for obs_type ∈ (:ram, :image)
+	for obs_type ∈ (:ram, :color, :grey)
 		# space_invaders should yield SpaceInvaders-v0 and SpaceInvaders-ram-v0
 		name = game |> (g) -> split(g, '_') .|> titlecase |> join
 		obs_type == :ram && (name = "$(name)-ram")
-
+		obs_type == :grey && (name = "$(name)-grey")
 
 		# ElevatorAction-ram-v0 seems to yield slightly
 		# non-deterministic observations about 10% of the time. We
