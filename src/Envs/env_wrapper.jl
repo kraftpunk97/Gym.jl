@@ -9,7 +9,8 @@ RealOrNothing = Union{Real, Nothing}
 mutable struct EnvWrapper
     done::Bool
     total_reward::RealOrNothing
-    steps::Int
+    steps_since_reset::Int
+	total_steps::Int
     train::Bool
 	reward_threshold::RealOrNothing
 	max_episode_steps::IntOrNothing
@@ -22,17 +23,18 @@ end
 
 EnvWrapper(env::AbstractEnv, ctx::AbstractCtx, train::Bool=true;
 		   reward_threshold=nothing, max_episode_steps=nothing) =
-EnvWrapper(false, 0, 0, train, reward_threshold, max_episode_steps, env.action_space,
+EnvWrapper(false, 0, 0, 0, train, reward_threshold, max_episode_steps, env.action_space,
  			env.observation_space, env, ctx, false)
 
 function step!(env::EnvWrapper, a)
 	@assert env.reset_called_first "Cannot call step!(::EnvWrapper, ::Any) before calling reset!(::EnvWrapper)"
     s′, r, done, dict = step!(env._env, a)
     env.total_reward = env.total_reward .+ r
-    env.steps += 1
+    env.steps_since_reset += 1
+	env.total_steps += 1
     env.done = done
 	if !isnothing(env.max_episode_steps)
-		env.done |= env.steps ≥ env.max_episode_steps
+		env.done |= env.steps_since_reset ≥ env.max_episode_steps
 	end
     return s′, r, env.done, dict
 end
@@ -41,7 +43,7 @@ function reset!(env::EnvWrapper)
 	env.reset_called_first = true
     env.done = false
     env.total_reward = 0
-    env.steps = 0
+    env.steps_since_reset= 0
     reset!(env._env)
 end
 
