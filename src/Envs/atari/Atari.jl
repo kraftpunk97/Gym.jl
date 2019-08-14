@@ -44,7 +44,7 @@ function step!(env::AtariEnv, action)
     num_steps = isa(env.frameskip, UnitRange) ? rand(env.frameskip) : env.frameskip
 
     for _ in 1:num_steps
-        reward += act(env.ale, action)
+        reward += act(env.ale, action-1)
     end
     ob = _get_obs(env)
     return ob, reward, ArcadeLearningEnvironment.game_over(env.ale), Dict(:ale_lives => lives(env.ale))
