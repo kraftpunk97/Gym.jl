@@ -68,7 +68,7 @@ function get_preprocessed_greyscale(env::AtariEnv)
     screen_grab = getScreenGrayscale(env.ale) ./ 255f0
     w, h = getScreenWidth(env.ale), getScreenHeight(env.ale)
 
-    screen_grab = reshape(screen_grab, w, h)
+    screen_grab = reshape(screen_grab, Int(w), Int(h))
 
     return permutedims(screen_grab, [2, 1])
 end
