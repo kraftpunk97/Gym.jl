@@ -24,7 +24,7 @@ function AtariEnv( ; game_path::String, obs_type::Symbol=:ram, frameskip::Union{
     ale = ALE_new()
     loadROM(ale, game_path)  # This is will also check if the loaded file is valid or not.
     action_set = full_action_space ? getLegalActionSet(ale) : getMinimalActionSet(ale)
-    action_set .+= 1  # Converting to one indexed array
+    #action_set .+= 1  # Converting to one indexed array
     action_space = full_action_space ? Discrete(getLegalActionSize(ale)) : Discrete(getMinimalActionSize(ale))
 
     setFloat(ale, "repeat_action_probability", repeat_action_probability)
@@ -44,7 +44,7 @@ function step!(env::AtariEnv, action)
     num_steps = isa(env.frameskip, UnitRange) ? rand(env.frameskip) : env.frameskip
 
     for _ in 1:num_steps
-        reward += act(env.ale, action-1)
+        reward += act(env.ale, env.action_set[action])
     end
     ob = _get_obs(env)
     return ob, reward, ArcadeLearningEnvironment.game_over(env.ale), Dict(:ale_lives => lives(env.ale))
