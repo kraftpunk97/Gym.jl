@@ -27,6 +27,7 @@ while i <= length(actions) && !done
 end
 ```
 ## Currently available environments
-* CartPole
-* Pendulum
-* Continuous_MountainCar
+* Continous Control Problems
+* Algorithmic Environments
+* Atari Environments
+* Toy Text Problems
