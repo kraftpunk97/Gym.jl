@@ -6,8 +6,14 @@ Gym environments in Julia
 **`Gym.jl` requires Julia v1.1**
 
 # Installation
+First, we need to install a dependency `GymSpaces.jl`, which is currently unregistered (hopefully not for long).
+
 ```julia
-julia> ] add https://github.com/FluxML/Gym.jl
+julia> ] add https://github.com/kraftpunk97/GymSpaces.jl
+```
+Next we proceed to install `Gym.jl`
+```julia
+julia> ] add https://github.com/kraftpunk97/Gym.jl#toytext
 ```
 
 ## Usage
