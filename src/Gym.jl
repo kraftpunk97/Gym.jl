@@ -1,7 +1,7 @@
 module Gym
 
 using Flux
-using Flux.Tracker
+#using Flux.Tracker
 
 
 # GymSpaces exports
