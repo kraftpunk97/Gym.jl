@@ -1,4 +1,4 @@
-import Flux.testmode!
+#import Flux.testmode!
 
 abstract type AbstractEnv end
 abstract type AbstractCtx end
