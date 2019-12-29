@@ -21,7 +21,7 @@ struct EnvSpec
     entry_point::String
 
     trials::Int
-    reward_threshold::Union{Int, Nothing}
+    reward_threshold::Union{Float32, Nothing}
     nondeterministic::Bool
     tags::Dict{String, Any}
     max_episode_steps::Union{Int, Nothing}
