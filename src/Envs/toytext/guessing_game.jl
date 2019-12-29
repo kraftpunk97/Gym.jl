@@ -9,9 +9,11 @@ mutable struct GuessingGameEnv <: AbstractEnv
     number
     guess_count
     guess_max
-observation
+    observation
     seed::MersenneTwister
 end
+
+include("vis/guessing_game.jl")
 
 function GuessingGameEnv()
     seed = MersenneTwister()
@@ -52,6 +54,7 @@ function step!(env::GuessingGameEnv, action)
 
     reward = 0
     done = false
+
     if (env.number - env.range * 0.01) < action < (env.number + env.range * 0.01)
         reward = 1
         done = true
@@ -62,5 +65,9 @@ function step!(env::GuessingGameEnv, action)
         done = true
     end
 
-    return env.observation, reward, done, Dict(:number => env.number, :guess => env.guess_count)
+    return env.observation, reward, done, Dict(:number => env.number, :guesses => env.guess_count)
+end
+
+function drawcanvas!(env::GuessingGameEnv)
+    return env.observation
 end

@@ -1,6 +1,7 @@
 using GymSpaces: Discrete, TupleSpace, AbstractSpace
 using Random
 
+# 1 = Ace, 2-10 = Number cards, Jack/Queen/King = 10
 deck = vcat(collect(1:10), [10, 10, 10])
 
 @inline draw_card(seed::MersenneTwister) = rand(seed, deck)
@@ -9,7 +10,7 @@ deck = vcat(collect(1:10), [10, 10, 10])
 @inline sum_hand(hand) = usable_ace(hand) ? sum(hand) + 10 : sum(hand)
 @inline is_bust(hand) = sum_hand(hand) > 21
 @inline score(hand) = is_bust(hand) ? 0 : sum_hand(hand)
-@inline is_natural(hand) = sort(hand) == [1, 10]
+@inline isnatural(hand) = sort(hand) == [1, 10]
 
 mutable struct BlackjackEnv <: AbstractEnv
     action_space::AbstractSpace
@@ -19,6 +20,8 @@ mutable struct BlackjackEnv <: AbstractEnv
     player::Array
     seed::MersenneTwister
 end
+
+include("vis/blackjack.jl")
 
 """Simple blackjack environment
 
@@ -51,6 +54,7 @@ by Sutton and Barto.
 http://incompleteideas.net/book/the-book-2nd.html
 """
 function BlackjackEnv(natural=false)
+    # natural = flag to payout on a "natural" blackjack win, like casion rules
     action_space = Discrete(2)
     observation_space = TupleSpace([
         Discrete(32),
@@ -62,7 +66,7 @@ function BlackjackEnv(natural=false)
 end
 
 seed!(env::BlackjackEnv) = (env.seed = MersenneTwister())
-seed!(env::BlackjackEnv, int::Unsigned) = (env.seed = MersenneTwister(int))
+seed!(env::BlackjackEnv, int::Integer) = (env.seed = MersenneTwister(int))
 
 @inline get_obs(env::BlackjackEnv) = (sum_hand(env.player), env.dealer[1], usable_ace(env.player))
 
@@ -75,24 +79,23 @@ end
 function step!(env::BlackjackEnv, action)
     @assert action ∈ env.action_space "Invalid action"
 
-    if action == 1
+    if action == 1 # hit: add a card to the players hand and return
         push!(env.player, draw_card(env.seed))
-        if is_bust(env.player)
-            done = true
-            reward = -1
-        else
-            done = false
-            reward = 0
-        end
-    else
+        done, reward = is_bust(env.player) ? (true, -1) : (false, 0)
+
+    else # stick: play out the dealers hand, and score
         done = true
         while sum_hand(env.dealer) < 17
             push!(env.dealer, draw_card(env.seed))
         end
         reward = Float32(cmp(score(env.player), score(env.dealer)))
-        if env.natural && is_natural(env.player) && reward == 1f0
+        if env.natural && isnatural(env.player) && reward == 1f0
             reward = 1.5f0
         end
     end
     return get_obs(env), reward, done, Dict{Nothing, Nothing}()
+end
+
+function drawcanvas!(env::BlackjackEnv)
+    return get_obs(env)
 end

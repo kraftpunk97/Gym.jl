@@ -1,3 +1,5 @@
+using GymSpaces: Discrete
+
 include("discrete.jl")
 
 mutable struct CliffWalkingEnv <: DiscreteEnv
@@ -6,7 +8,11 @@ mutable struct CliffWalkingEnv <: DiscreteEnv
 
     _cliff
     discenv_obj
+    action_space::Discrete
+    observation_space::Discrete
 end
+
+include("vis/cliffwalking.jl")
 
 UP = 1
 RIGHT = 2
@@ -60,10 +66,12 @@ function CliffWalkingEnv()
     isd[start_state_index] = 1.0
 
     discenv_obj = DiscreteEnvObj(nS, nA, P, isd)
-    CliffWalkingEnv(shape, start_state_index, _cliff, discenv_obj)
+    action_space = Discrete(nA)
+    observation_space = Discrete(nS)
+    CliffWalkingEnv(shape, start_state_index, _cliff, discenv_obj, action_space, observation_space)
 end
 
-function render(env::CliffWalkingEnv)
+function drawcanvas!(env::CliffWalkingEnv)
     output = ""
     for y ∈ 1:env.shape[1]
         output_line = ""
@@ -89,5 +97,5 @@ function render(env::CliffWalkingEnv)
         end
         output *= output_line
     end
-    println(output)
+    return output
 end

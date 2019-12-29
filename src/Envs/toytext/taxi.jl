@@ -1,3 +1,5 @@
+using GymSpaces: Discrete
+
 include("discrete.jl")
 
 MAP = [
@@ -14,8 +16,54 @@ mutable struct TaxiEnv <: DiscreteEnv
     desc
     locs
     discenv_obj::DiscreteEnvObj
+    action_space::Discrete
+    observation_space::Discrete
 end
 
+include("vis/taxi.jl")
+
+"""
+The Taxi Problem
+from "Hierarchical Reinforcement Learning with the MAXQ Value Function Decomposition"
+by Tom Dietterich
+
+Description:
+There are four designated locations in the grid world indicated by R(ed), B(lue), G(reen), and Y(ellow). When the episode starts, the taxi starts off at a random square and the passenger is at a random location. The taxi drive to the passenger's location, pick up the passenger, drive to the passenger's destination (another one of the four specified locations), and then drop off the passenger. Once the passenger is dropped off, the episode ends.
+
+Observations:
+There are 500 discrete states since there are 25 taxi positions, 5 possible locations of the passenger (including the case when the passenger is the taxi), and 4 destination locations.
+
+Actions:
+There are 6 discrete deterministic actions:
+    - 1: move south
+    - 2: move north
+    - 3: move east
+    - 4: move west
+    - 5: pickup passenger
+    - 6: dropoff passenger
+
+Rewards:
+There is a reward of -1 for each action and an additional reward of +20 for delievering the passenger. There is a reward of -10 for executing actions "pickup" and "dropoff" illegally.
+
+
+Rendering:
+    - blue: passenger
+    - magenta: destination
+    - yellow: empty taxi
+    - green: full taxi
+    - other letters (R, G, B and Y): locations for passengers and destinations
+
+actions:
+    - 1: south
+    - 2: north
+    - 3: east
+    - 4: west
+    - 5: pickup
+    - 6: dropoff
+
+    state space is represented by:
+        (taxi_row, taxi_col, passenger_location, destination)
+"""
 function TaxiEnv()
     desc = Char.(vcat([Int.(collect(row))' for row in MAP]...))
 
@@ -80,7 +128,9 @@ function TaxiEnv()
     end
     initial_state_distrib ./= sum(initial_state_distrib)
     discenv_obj = DiscreteEnvObj(num_states, num_actions, P, initial_state_distrib)
-    TaxiEnv(desc, locs, discenv_obj)
+    action_space = Discrete(num_actions)
+    observation_space = Discrete(num_states)
+    TaxiEnv(desc, locs, discenv_obj, action_space, observation_space)
 end
 
 function encode(taxi_row, taxi_col, pass_loc, dest_idx)
@@ -107,4 +157,30 @@ function decode(i)
     push!(out, i+1)
     reverse!(out)
     return out
+end
+
+function drawcanvas!(env::TaxiEnv)
+    actionarr = ["South", "North", "East", "West", "Pickup", "Dropoff"]
+    outfile = ""
+
+    out = ["$char" for char in env.desc]
+    taxi_row, taxi_col, pass_idx, dest_idx = decode(env.s)
+
+    ul(x) = x == " " ? "_" : x
+
+    if pass_idx ≤ 4
+        out[1 + taxi_row, 2 * (taxi_col-1) + 2] = colorize(
+                    out[1 + taxi_row, 2 * (taxi_col-1) + 2], :yellow, highlight=true)
+        pi, pj = env.locs[pass_idx]
+        out[1 + pi, 2 * (pj-1) + 2] = colorize(ul(out[1 + pi, 2 * (pj-1) + 2]), :blue, bold=true)
+    else
+        out[1 + taxi_row, 2 * (taxi_col-1) + 2] = colorize_bold(
+                     out[1 + taxi_row, 2 * (taxi_col-1) + 2], :green, highlight=true)
+    end
+    di, dj = env.locs[dest_idx]
+    out[1 + di, 2 * (dj-1) + 2] = colorize(out[1 + di, 2 * (dj-1) + 2], :magenta)
+    outfile *= join([join(out[row, :], "") for row in 1:size(env.desc, 1)], "\n")
+    outfile *= isnothing(env.lastaction) ? "\n" : " ($(actionarr[env.lastaction]))\n"
+
+    return outfile
 end

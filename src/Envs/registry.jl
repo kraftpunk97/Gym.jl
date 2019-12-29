@@ -176,3 +176,54 @@ for game ∈ games_list
 			)
 	end
 end
+
+
+# Toy Text
+#==============================================================================#
+
+register("Blackjack-v0",
+	     :BlackjackEnv,
+		 "/toytext/blackjack.jl")
+
+register("KellyCoinflip-v0",
+		 :KellyCoinFlipEnv,
+		 "/toytext/kellycoinflip.jl",
+		 reward_threshold=246.61)
+
+register("FrozenLake-v0",
+		 :FrozenLakeEnv,
+		 "/toytext/frozen_lake.jl",
+		 kwargs = Dict(
+		 	:map_name => :fourxfour
+		 ),
+		 max_episode_steps=100,
+		 reward_threshold=0.78)
+
+register("FrozenLake8x8-v0",
+		 :FrozenLakeEnv,
+		 "/toytext/frozen_lake.jl",
+		 kwargs = Dict(
+		 	:map_name => :eightxeight
+		 ),
+		 max_episode_steps=200,
+		 reward_threshold=0.99)
+
+register("CliffWalking-v0",
+		 :CliffWalkingEnv,
+		 "/toytext/cliffwalking.jl")
+
+register("Taxi-v2",
+		 :TaxiEnv,
+		 "/toytext/taxi.jl",
+		 reward_threshold=8,
+		 max_episode_steps=200)
+
+register("GuessingGame-v0",
+		 :GuessingGameEnv,
+		 "/toytext/guessing_game.jl",
+		 max_episode_steps=200)
+
+register("HotterColder-v0",
+		 :HotterColderEnv,
+		 "/toytext/hotter_colder.jl",
+		 max_episode_steps=200)

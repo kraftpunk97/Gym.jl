@@ -1,7 +1,7 @@
 using Random
 using GymSpaces: Box, Discrete
 
-struct HotterColderEnv <: AbstractEnv
+mutable struct HotterColderEnv <: AbstractEnv
     range
     bounds
     action_space
@@ -12,6 +12,8 @@ struct HotterColderEnv <: AbstractEnv
     observation
     seed::MersenneTwister
 end
+
+include("vis/hotter_colder.jl")
 
 function HotterColderEnv()
     seed = MersenneTwister()
@@ -51,8 +53,13 @@ function step!(env::HotterColderEnv, action)
     end
 
     reward = ((min(action, env.number) + env.bounds) / (max(action, env.number) + env.bounds)) ^ 2
+
     env.guess_count += 1
     done = env.guess_count ≥ env.guess_max
 
-    return env.observation, reward[1], done Dict(:number => env.number, :guess => env.guess_count)
+    return env.observation, reward[1], done, Dict(:number => env.number, :guesses => env.guess_count)
+end
+
+function drawcanvas!(env::HotterColderEnv)
+    return env.observation
 end

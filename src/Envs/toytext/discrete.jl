@@ -1,10 +1,10 @@
 using Random
-using GymSpaces: Discrete
+
 abstract type DiscreteEnv <: AbstractEnv end
 
 function categorical_sample(prob_n, seed)
     csprob_n = cumsum(prob_n)
-    return argmax(csprob_n .> rand(Float32))
+    return argmax(csprob_n .> rand(seed, Float32))
 end
 
 mutable struct DiscreteEnvObj
@@ -14,20 +14,15 @@ mutable struct DiscreteEnvObj
     nS
     nA
 
-    action_space::Discrete
-    observation_space::Discrete
-
     s
     seed::MersenneTwister
 end
 
 function DiscreteEnvObj(nS, nA, P, isd)
-    action_space = Discrete(nA)
-    observation_space = Discrete(nS)
     seed = MersenneTwister()
 
     s = categorical_sample(isd, seed)
-    DiscreteEnvObj(P, isd, nothing, nS, nA, action_space, observation_space, s, seed)
+    DiscreteEnvObj(P, isd, nothing, nS, nA, s, seed)
 end
 
 # All DiscreteEnv must have a `discenv_obj` field...
@@ -42,10 +37,6 @@ function Base.getproperty(env::DiscreteEnv, sym::Symbol)
         return env.discenv_obj.nS
     elseif sym == :nA
         return env.discenv_obj.nA
-    elseif sym == :action_space
-        return env.discenv_obj.action_space
-    elseif sym == :observation_space
-        return env.discenv_obj.observation_space
     elseif sym == :s
         return env.discenv_obj.s
     elseif sym == :seed
@@ -56,7 +47,7 @@ function Base.getproperty(env::DiscreteEnv, sym::Symbol)
 end
 
 seed!(env::DiscreteEnv) = (env.seed = MersenneTwister())
-seed!(env::DiscreteEnv, int) = (env.seed = MersenneTwister(int))
+seed!(env::DiscreteEnv, int::Integer) = (env.seed = MersenneTwister(int))
 
 function reset!(env::DiscreteEnv)
     env.discenv_obj.s = categorical_sample(env.isd, env.seed)
