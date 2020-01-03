@@ -4,6 +4,7 @@ the output tape. http://arxiv.org/abs/1511.07275
 """
 
 using DataStructures: CircularBuffer
+using Random
 include("AlgorithmicEnv.jl")
 
 RealOrNothing = Union{Float32, Nothing}
@@ -32,6 +33,7 @@ mutable struct CopyEnv <: TapeAlgorithmicEnv
     write_head_position::Int8
     last_action
     last_reward::Float32
+    seed::MersenneTwister
 end
 
 function CopyEnv(base::Int=5, chars::Bool=true)
@@ -51,7 +53,8 @@ function CopyEnv(base::Int=5, chars::Bool=true)
             1,  # read_head_posiion
             1,  # write_head_position
             nothing,  # last_action
-            0.0)  # last_reward
+            0.0,  # last_reward
+            MersenneTwister()) # seed
 end
 
 target_from_input_data!(env::CopyEnv) = env.target = env.input_data

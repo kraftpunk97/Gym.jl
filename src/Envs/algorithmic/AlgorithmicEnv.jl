@@ -62,7 +62,7 @@ function reset!(env::AlgorithmicEnv)
     env.write_head_position = 1
     env.episode_total_reward = 0f0
     env.time = 0
-    len = rand(0:2) + env.min_length
+    len = rand(env.seed, 0:2) + env.min_length
     generate_input_data!(env, len)
     target_from_input_data!(env)
     _get_obs(env)
@@ -111,9 +111,9 @@ function step!(env::AlgorithmicEnv, action)
 end
 
 generate_input_data!(env::TapeAlgorithmicEnv, size_) =
-    env.input_data = [rand(1:env.base) for _ in 1:size_]
+    env.input_data = [rand(env.seed, 1:env.base) for _ in 1:size_]
 generate_input_data!(env::GridAlgorithmicEnv, size_) =
-    env.input_data = [[rand(1:env.base) for _  in 1:env.rows] for __ in 1:size_]
+    env.input_data = [[rand(env.seed, 1:env.base) for _  in 1:env.rows] for __ in 1:size_]
 
 
 function move!(env::TapeAlgorithmicEnv, movement)

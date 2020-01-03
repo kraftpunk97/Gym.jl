@@ -1,3 +1,4 @@
+using Random
 using DataStructures: CircularBuffer
 include("AlgorithmicEnv.jl")
 
@@ -25,6 +26,7 @@ mutable struct ReverseEnv <: TapeAlgorithmicEnv
     write_head_position::Int8
     last_action
     last_reward::Float32
+    seed::MersenneTwister
 end
 
 ReverseEnv(base::Int=2) =
@@ -37,7 +39,7 @@ ReverseEnv(base::Int=2) =
             TupleSpace([Discrete(2), Discrete(2), Discrete(base)]),  # action_space
             Discrete(base+1),  # observation_space
             (:left, :right), 1,  # MOVEMENTS and READ_HEAD_START
-            Int8[], Int8[], 0, 1, 1, nothing, 0.0)
+            Int8[], Int8[], 0, 1, 1, nothing, 0.0, MersenneTwister())
 
 target_from_input_data!(env::ReverseEnv) =
     env.target = [char for char in reverse(env.input_data)]

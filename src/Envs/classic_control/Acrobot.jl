@@ -1,3 +1,4 @@
+using Random
 using GymSpace: Box, Discrete
 
 """
@@ -25,6 +26,7 @@ mutable struct AcrobotEnv <: AbstractEnv
     AVAIL_TORQUE::Array{Float32, N} where N
     torque_noise_max::Float32
     book_or_nips::String
+    seed::MersenneTwister
 end
 
 include("vis/acrobot.jl")
@@ -57,15 +59,16 @@ function AcrobotEnv()
     observation_space = Box(low, high, Float32)
     action_space = Discrete(3)
     state = nothing
+    seed = MersenneTwister()
 
     AcrobotEnv(viewer, observation_space, action_space, state, dt, LINK_LENGTH_1,
                LINK_LENGTH_2, LINK_MASS_1, LINK_MASS_2, LINK_COM_POS_1, LINK_COM_POS_2,
-               LINK_MOI, MAX_VEL_1, MAX_VEL_2, AVAIL_TORQUE, torque_noise_max, book_or_nips)
+               LINK_MOI, MAX_VEL_1, MAX_VEL_2, AVAIL_TORQUE, torque_noise_max, book_or_nips, seed)
 end
 
 
 function reset!(env::AcrobotEnv)
-    env.state = param(rand(Float32, 4) * 2f-1 .- 1f-1)
+    env.state = param(rand(env.seed, Float32, 4) * 2f-1 .- 1f-1)
     return _get_ob(env)
 end
 
@@ -83,7 +86,7 @@ function step!(env::AcrobotEnv, action)
     torque = get_torque(env, action)
 
     # Add noise to the force action
-    env.torque_noise_max > 0 && (torque += env.torque_noise_max * (2rand(Float32) - 1))
+    env.torque_noise_max > 0 && (torque += env.torque_noise_max * (2rand(env.seed, Float32) - 1))
 
     # Now, augment the state with our force action so it can be passed to _dsdt
     s_augmented = vcat(s, torque)
@@ -98,11 +101,11 @@ function step!(env::AcrobotEnv, action)
     terminal = _terminal(env)
     reward = !all(terminal) ? -1f0 : 0f0
 
-    return _get_ob(env), reward, terminal, Dict()
+    return _get_obs(env), reward, terminal, Dict()
 end
 
 
-function _get_ob(env::AcrobotEnv)
+function _get_obs(env::AcrobotEnv)
     s = env.state
     return vcat(cos.(s[1:1]), sin.(s[1:1]), cos.(s[2:2]), sin.(s[2:2]), s[3:4])
 end

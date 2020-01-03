@@ -1,3 +1,4 @@
+using Random
 using DataStructures: CircularBuffer
 include("AlgorithmicEnv.jl")
 
@@ -27,6 +28,7 @@ mutable struct DuplicatedInputEnv <: TapeAlgorithmicEnv
     write_head_position::Int8
     last_action
     last_reward::Float32
+    seed::MersenneTwister
 end
 
 
@@ -43,7 +45,8 @@ DuplicatedInputEnv(base::Int=5, duplication::Int=2) =
             duplication,
             Int8[],
             Int8[],
-            0, 1, 1, nothing, 0.0)
+            0, 1, 1, nothing, 0.0,
+            MersenneTwister())
 
 
 function generate_input_data!(env::DuplicatedInputEnv, size_)
@@ -51,7 +54,7 @@ function generate_input_data!(env::DuplicatedInputEnv, size_)
     size_ < env.duplication &&
         (size_ = env.duplication)
     for i=1:div(size_, env.duplication)
-        char = rand(1:env.base)
+        char = rand(env.seed, 1:env.base)
         for _ in 1:env.duplication
             push!(res, char)
         end
