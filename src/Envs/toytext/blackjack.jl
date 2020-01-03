@@ -68,7 +68,7 @@ end
 seed!(env::BlackjackEnv) = (env.seed = MersenneTwister())
 seed!(env::BlackjackEnv, int::Integer) = (env.seed = MersenneTwister(int))
 
-@inline get_obs(env::BlackjackEnv) = (sum_hand(env.player), env.dealer[1], usable_ace(env.player))
+@inline _get_obs(env::BlackjackEnv) = (sum_hand(env.player), env.dealer[1], usable_ace(env.player))
 
 function reset!(env::BlackjackEnv)
     env.dealer = draw_hand(env.seed)
@@ -93,9 +93,9 @@ function step!(env::BlackjackEnv, action)
             reward = 1.5f0
         end
     end
-    return get_obs(env), reward, done, Dict{Nothing, Nothing}()
+    return _get_obs(env), reward, done, Dict{Nothing, Nothing}()
 end
 
 function drawcanvas!(env::BlackjackEnv)
-    return get_obs(env)
+    return _get_obs(env)
 end

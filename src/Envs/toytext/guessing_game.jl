@@ -71,3 +71,5 @@ end
 function drawcanvas!(env::GuessingGameEnv)
     return env.observation
 end
+
+_get_obs(env::GuessingGameEnv) = env.observation

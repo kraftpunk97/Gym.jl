@@ -10,7 +10,7 @@ export sample
 
 include("Envs/registry.jl")
 export make, register,        	     		# Registry functions
-       EnvWrapper, reset!, step!, state,
+       EnvWrapper, reset!, step!, seed!, state,
        trainable, game_over, render!, testmode!  # Environment interaction functions
 
 end #module

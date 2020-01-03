@@ -64,3 +64,7 @@ function step!(env::DiscreteEnv, action)
     env.discenv_obj.lastaction = action
     return s, r, d, Dict(:prob => p)
 end
+
+function _get_obs(env::DiscreteEnv)
+    return env.discenv_obj.s
+end

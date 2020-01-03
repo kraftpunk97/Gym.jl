@@ -63,3 +63,5 @@ end
 function drawcanvas!(env::HotterColderEnv)
     return env.observation
 end
+
+_get_obs(env::HotterColderEnv) = env.observation
