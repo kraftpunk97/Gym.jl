@@ -1,3 +1,4 @@
+using Random
 using GymSpaces: Discrete, Box
 
 mutable struct MountainCarEnv <: AbstractEnv
@@ -15,6 +16,7 @@ mutable struct MountainCarEnv <: AbstractEnv
     action_space::Discrete
     observation_space::Box
     state
+    seed::MersenneTwister
 end
 
 include("vis/mountaincar.jl")
@@ -35,10 +37,11 @@ function MountainCarEnv()
     observation_space = Box(low, high, Float32)
     state
 
+    seed = MersenneTwister()
     MountainCarEnv(min_position, max_position, max_speed, goal_position,
                    force, gravity,
                    low, high,
-                   action_space, observation_space, nothing)
+                   action_space, observation_space, nothing, seed)
 end
 
 function step!(env::MountainCarEnv, action)
@@ -61,7 +64,9 @@ function step!(env::MountainCarEnv, action)
 end
 
 function reset!(env::MountainCarEnv)
-    env.state = param([2f-1rand(Float32) - 6f-1, 0f0])
+    env.state = param([2f-1rand(env.seed, Float32) - 6f-1, 0f0])
 end
 
 Base.show(io::IO, env::MountainCarEnv) = print(io, "MountainCarEnv")
+
+_get_obs(env::MountainCarEnv) = env.state

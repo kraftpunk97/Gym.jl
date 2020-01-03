@@ -1,4 +1,4 @@
-#import Flux.testmode!
+using Random
 
 abstract type AbstractEnv end
 abstract type AbstractCtx end
@@ -45,6 +45,10 @@ function reset!(env::EnvWrapper)
     env.total_reward = 0
     env.steps_since_reset= 0
     reset!(env._env)
+end
+
+function seed!(env::EnvWrapper, seed::Int=42)
+	env._env.seed = MersenneTwister(seed)
 end
 
 render!(env::EnvWrapper, ctx::AbstractCtx) = render!(env._env, ctx)

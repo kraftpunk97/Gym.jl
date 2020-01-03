@@ -1,3 +1,4 @@
+using Random
 using GymSpaces: Box, Discrete
 
 mutable struct CartPoleEnv <: AbstractEnv
@@ -18,7 +19,7 @@ mutable struct CartPoleEnv <: AbstractEnv
     observation_space::Box
     viewer
     state
-
+    seed::MersenneTwister
     steps_beyond_done
 end
 
@@ -53,10 +54,11 @@ function CartPoleEnv()
     state = nothing
 
     steps_beyond_done = nothing
+    seed = MersenneTwister()
     CartPoleEnv(
         gravity, masscart, masspole, total_mass, length, polemass_length,
         force_mag, τ, kinematics_integrator, θ_threshold_radians, x_threshold,
-        action_space, observation_space, viewer, state, steps_beyond_done)
+        action_space, observation_space, viewer, state, steps_beyond_done, seed)
 end
 
 function step!(env::CartPoleEnv, action)
@@ -105,7 +107,7 @@ function step!(env::CartPoleEnv, action)
 end
 
 function reset!(env::CartPoleEnv)
-    env.state = rand(Float32, 4) * 1f-1 .- 5f-2
+    env.state = rand(env.seed, Float32, 4) * 1f-1 .- 5f-2
 
     if isdefined(Main, :CuArrays)
         env.state = env.state |> gpu
@@ -117,3 +119,5 @@ function reset!(env::CartPoleEnv)
 end
 
 Base.show(io::IO, env::CartPoleEnv) = print(io, "CartPoleEnv")
+
+_get_obs(env::CartPoleEnv) = env.state

@@ -1,3 +1,4 @@
+using Random
 using GymSpaces: Box
 
 mutable struct PendulumEnv <: AbstractEnv
@@ -9,6 +10,7 @@ mutable struct PendulumEnv <: AbstractEnv
     state
     action_space::Box
     observation_space::Box
+    seed::MersenneTwister
 end
 
 include("vis/pendulum.jl")
