@@ -65,3 +65,8 @@ end
 Base.show(io::IO, env::Continuous_MountainCarEnv) = print(io, "Continuous-MountainCarEnv")s
 
 _get_obs(env::Continuous_MountainCarEnv) = env.state
+
+function seed!(env::ContinousMountainCarEnv, seed::Unsigned)
+    env.seed = MersenneTwister(seed)
+    return nothing
+end

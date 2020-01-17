@@ -46,8 +46,10 @@ function Base.getproperty(env::DiscreteEnv, sym::Symbol)
     end
 end
 
-seed!(env::DiscreteEnv) = (env.seed = MersenneTwister())
-seed!(env::DiscreteEnv, int::Integer) = (env.seed = MersenneTwister(int))
+function seed!(env::DiscreteEnv, seed::Unsigned)
+    env.seed = MersenneTwister(seed)
+    return nothing
+end
 
 function reset!(env::DiscreteEnv)
     env.discenv_obj.s = categorical_sample(env.isd, env.seed)

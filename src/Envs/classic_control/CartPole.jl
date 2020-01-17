@@ -19,8 +19,8 @@ mutable struct CartPoleEnv <: AbstractEnv
     observation_space::Box
     viewer
     state
-    seed::MersenneTwister
     steps_beyond_done
+    seed::MersenneTwister
 end
 
 include("vis/cartpole.jl")
@@ -121,3 +121,8 @@ end
 Base.show(io::IO, env::CartPoleEnv) = print(io, "CartPoleEnv")
 
 _get_obs(env::CartPoleEnv) = env.state
+
+function seed!(env::CartPoleEnv, seed::Unsigned)
+    env.seed = MersenneTwister(seed)
+    return nothing
+end

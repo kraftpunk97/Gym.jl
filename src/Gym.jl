@@ -6,11 +6,13 @@ using Flux
 
 # GymSpaces exports
 using GymSpaces
-export sample
+export sample, seed!
+
+using Requires
 
 include("Envs/registry.jl")
-export make, register,        	     		# Registry functions
+export make, register, speclist,          	     # Registry functions
        EnvWrapper, reset!, step!, seed!, state,
-       trainable, game_over, render!, testmode!  # Environment interaction functions
+       trainable, is_over, render!, testmode!    # Environment interaction functions
 
 end #module

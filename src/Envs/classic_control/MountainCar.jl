@@ -70,3 +70,8 @@ end
 Base.show(io::IO, env::MountainCarEnv) = print(io, "MountainCarEnv")
 
 _get_obs(env::MountainCarEnv) = env.state
+
+function seed!(env::MountainCarEnv, seed::Unsigned)
+    env.seed = MersenneTwister(seed)\
+    return nothing
+end

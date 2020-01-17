@@ -53,6 +53,10 @@ function check_level_up!(env::AlgorithmicEnv)
    end
 end
 
+function seed!(env::AlgorithmicEnv, seed::Unsigned)
+    env.seed = MersenneTwister(seed)
+    return nothing
+end
 
 function reset!(env::AlgorithmicEnv)
     check_level_up!(env)

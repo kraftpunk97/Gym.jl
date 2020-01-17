@@ -66,6 +66,10 @@ function AcrobotEnv()
                LINK_MOI, MAX_VEL_1, MAX_VEL_2, AVAIL_TORQUE, torque_noise_max, book_or_nips, seed)
 end
 
+function seed!(env::AcrobotEnv, seed::Unsigned)
+    env.seed = MersenneTwister(seed)
+    return nothing
+end
 
 function reset!(env::AcrobotEnv)
     env.state = param(rand(env.seed, Float32, 4) * 2f-1 .- 1f-1)

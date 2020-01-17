@@ -31,8 +31,11 @@ function HotterColderEnv()
                     guess_max, observation, seed)
 end
 
-seed!(env::HotterColderEnv) = (env.seed = MersenneTwister())
-seed!(env::HotterColderEnv, int) = (env.seed = MersenneTwister(int))
+
+function seed!(env::HotterColderEnv, seed::Unsigned)
+    env.seed = MersenneTwister(seed)
+    return nothing
+end
 
 function reset!(env::HotterColderEnv)
     env.number = 2range * rand(Float32) - range

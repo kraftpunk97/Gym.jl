@@ -208,15 +208,15 @@ version = "3.3.9+3"
 
 [[FileIO]]
 deps = ["Pkg"]
-git-tree-sha1 = "80c17c711c41416eb0ac68347dc036be68b37682"
+git-tree-sha1 = "74585bf1f7ed7259e166011e89f49363d7fa89a6"
 uuid = "5789e2e9-d7fb-5bc7-8068-2c6fae9b9549"
-version = "1.2.0"
+version = "1.2.1"
 
 [[FillArrays]]
 deps = ["LinearAlgebra", "Random", "SparseArrays"]
-git-tree-sha1 = "1a9fe4e1323f38de0ba4da49eafd15b25ec62298"
+git-tree-sha1 = "f2d726c6ec03f0a409dca7f94ba6fc135a7ca07d"
 uuid = "1a297f60-69ca-5386-bcde-b61e274b549b"
-version = "0.8.2"
+version = "0.8.3"
 
 [[FixedPointNumbers]]
 git-tree-sha1 = "d14a6fa5890ea3a7e5dcab6811114f132fec2b4b"
@@ -278,28 +278,28 @@ uuid = "bbac6d45-d8f3-5730-bfe4-7a449cd117ca"
 version = "0.3.0"
 
 [[ImageAxes]]
-deps = ["AxisArrays", "Colors", "FixedPointNumbers", "ImageCore", "MappedArrays", "Reexport", "SimpleTraits"]
-git-tree-sha1 = "0da90109d2574cf540fae8e8c58dfdf1c7e347ce"
+deps = ["AxisArrays", "ImageCore", "MappedArrays", "Reexport", "SimpleTraits"]
+git-tree-sha1 = "75b0225bd999c4bdd83144f4b1b2437890050892"
 uuid = "2803e5a7-5153-5ecf-9a86-9b4c37f5f5ac"
-version = "0.6.1"
+version = "0.6.2"
 
 [[ImageCore]]
 deps = ["Colors", "FixedPointNumbers", "Graphics", "MappedArrays", "OffsetArrays", "PaddedViews", "Reexport", "Requires"]
-git-tree-sha1 = "8bad767299f4eab28f231a92af2746137f3165af"
+git-tree-sha1 = "eb3c4a3341a3ea918a93a64a5e4d856a84f89489"
 uuid = "a09fc81d-aa75-5fe9-8630-4744c3626534"
-version = "0.8.8"
+version = "0.8.10"
 
 [[ImageDistances]]
-deps = ["ColorVectorSpace", "Colors", "Distances", "FixedPointNumbers", "ImageCore"]
-git-tree-sha1 = "aa69ce81260bcb5e950a5e3b48ccca15447c6d8c"
+deps = ["ColorVectorSpace", "Distances", "ImageCore", "LinearAlgebra", "MappedArrays", "Statistics"]
+git-tree-sha1 = "cf9b02b9f5e33c768c223de6d8f7d1b6d0cf4136"
 uuid = "51556ac3-7006-55f5-8cb3-34580c88182d"
-version = "0.2.4"
+version = "0.2.7"
 
 [[ImageFiltering]]
-deps = ["CatIndices", "ColorVectorSpace", "Colors", "ComputationalResources", "DataStructures", "FFTViews", "FFTW", "FixedPointNumbers", "ImageCore", "LinearAlgebra", "MappedArrays", "OffsetArrays", "Requires", "StaticArrays", "Statistics", "TiledIteration"]
-git-tree-sha1 = "2be726ac925c00106d066477d17e330e4ab67625"
+deps = ["CatIndices", "ColorVectorSpace", "ComputationalResources", "DataStructures", "FFTViews", "FFTW", "ImageCore", "LinearAlgebra", "MappedArrays", "OffsetArrays", "Requires", "StaticArrays", "Statistics", "TiledIteration"]
+git-tree-sha1 = "06f2f3b48f859a44b045c1a0b6ff71058923414f"
 uuid = "6a3955dd-da59-5b1f-98d4-e7296123deb5"
-version = "0.6.7"
+version = "0.6.9"
 
 [[ImageMetadata]]
 deps = ["AxisArrays", "ColorVectorSpace", "Colors", "FixedPointNumbers", "ImageAxes", "ImageCore", "IndirectArrays"]
@@ -308,22 +308,22 @@ uuid = "bc367c6b-8a6b-528e-b4bd-a4b897500b49"
 version = "0.7.2"
 
 [[ImageMorphology]]
-deps = ["Colors", "FixedPointNumbers", "ImageCore"]
-git-tree-sha1 = "2ea6e55a36166321ca735b8eaf74936180e2ad5d"
+deps = ["ImageCore"]
+git-tree-sha1 = "e41dd25ebf8de738a8ff4f1058a1823a7fe509cf"
 uuid = "787d08f9-d448-5407-9aad-5290dd7ab264"
-version = "0.2.4"
+version = "0.2.5"
 
 [[ImageShow]]
-deps = ["Base64", "ColorTypes", "Colors", "FileIO", "FixedPointNumbers", "ImageCore", "OffsetArrays", "Requires"]
-git-tree-sha1 = "c23323afc82b6b553e6b2244d531e50858ea392c"
+deps = ["Base64", "FileIO", "ImageCore", "OffsetArrays", "Requires"]
+git-tree-sha1 = "8544e64c9cffd0d59e49a574851ac13bb2cbe6a7"
 uuid = "4e3cecfd-b093-5904-9786-8bbb286a6a31"
-version = "0.2.0"
+version = "0.2.2"
 
 [[ImageTransformations]]
-deps = ["AxisAlgorithms", "ColorTypes", "ColorVectorSpace", "Colors", "CoordinateTransformations", "FixedPointNumbers", "IdentityRanges", "ImageCore", "Interpolations", "OffsetArrays", "StaticArrays"]
-git-tree-sha1 = "4cf03fc72d8877d5e58c1c72d176340ad4e28fda"
+deps = ["AxisAlgorithms", "ColorVectorSpace", "CoordinateTransformations", "IdentityRanges", "ImageCore", "Interpolations", "OffsetArrays", "StaticArrays"]
+git-tree-sha1 = "c4f958d2c5ca2aa11d29c1b8d50caf73602b667c"
 uuid = "02fcd773-0e25-5acc-982a-7f6622650795"
-version = "0.8.0"
+version = "0.8.1"
 
 [[Images]]
 deps = ["AxisArrays", "Base64", "ColorTypes", "ColorVectorSpace", "Colors", "FileIO", "FixedPointNumbers", "Graphics", "ImageAxes", "ImageCore", "ImageDistances", "ImageFiltering", "ImageMetadata", "ImageMorphology", "ImageShow", "ImageTransformations", "IndirectArrays", "MappedArrays", "OffsetArrays", "Reexport", "SparseArrays", "StaticArrays", "Statistics", "StatsBase", "TiledIteration"]
@@ -348,9 +348,9 @@ uuid = "b77e0a4c-d291-57a0-90e8-8db25a27a240"
 
 [[Interpolations]]
 deps = ["AxisAlgorithms", "LinearAlgebra", "OffsetArrays", "Random", "Ratios", "SharedArrays", "SparseArrays", "StaticArrays", "WoodburyMatrices"]
-git-tree-sha1 = "f5bf159a7705e2a705b0effa1be0c3d18e288fe1"
+git-tree-sha1 = "e4a219889f33a8c2435c26bf1bca6f4fbf8c1c0b"
 uuid = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
-version = "0.12.5"
+version = "0.12.6"
 
 [[IntervalSets]]
 deps = ["Dates", "Statistics"]
@@ -460,9 +460,9 @@ version = "0.11.4"
 
 [[OpenBLAS_jll]]
 deps = ["Libdl", "Pkg"]
-git-tree-sha1 = "87f80e645b1fbf22f7d1f99168abb8ef313d0422"
+git-tree-sha1 = "3a6e5767e8ae022871c19162cc3ecd80748bd3dc"
 uuid = "4536629a-c528-5b80-bd46-f80d51c5b363"
-version = "0.3.7+1"
+version = "0.3.7+4"
 
 [[OpenSpecFun_jll]]
 deps = ["Libdl", "Pkg"]
@@ -521,10 +521,9 @@ deps = ["Serialization"]
 uuid = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
 
 [[RangeArrays]]
-deps = ["Compat"]
-git-tree-sha1 = "d925adfd5b01cb46fde89dc9548d167b3b136f4a"
+git-tree-sha1 = "b9039e93773ddcfc828f12aadf7115b4b4d225f5"
 uuid = "b3c3ace0-ae52-54e7-9d0b-2c1406fd6b9d"
-version = "0.3.1"
+version = "0.3.2"
 
 [[Ratios]]
 deps = ["Compat"]
@@ -659,10 +658,10 @@ uuid = "c17dfb99-b4f7-5aad-8812-456da1ad7187"
 version = "0.4.2"
 
 [[WoodburyMatrices]]
-deps = ["LinearAlgebra", "Random", "SparseArrays", "Test"]
-git-tree-sha1 = "21772c33b447757ec7d3e61fcdfb9ea5c47eedcf"
+deps = ["LinearAlgebra", "SparseArrays"]
+git-tree-sha1 = "bbb9f7fd6fbdd9582e77c0b698312c543de5eb71"
 uuid = "efce3f68-66dc-5838-9240-27a6d6f5f9b6"
-version = "0.4.1"
+version = "0.5.0"
 
 [[ZipFile]]
 deps = ["Libdl", "Printf", "Zlib_jll"]

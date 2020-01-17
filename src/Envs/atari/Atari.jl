@@ -36,6 +36,14 @@ function AtariEnv( ; game_path::String, obs_type::Symbol=:ram, frameskip::Union{
     AtariEnv(game_path, ale, action_set, action_space, observation_space, frameskip, obs_type)
 end
 
+function seed!(env::AtariEnv, seed::Unsigned)
+    seed = seed % 2^31
+    setInt(env.ale, "random_seed", seed)
+    loadROM(env.ale, env.game_path)
+    return nothing
+end
+
+
 
 function step!(env::AtariEnv, action)
     @assert action ∈ env.action_space "Action $action is invalid."
@@ -141,5 +149,11 @@ function get_keys_to_action(env::AtariEnv)
     keystoaction
 end
 
+
 Base.show(io::IO, env::AtariEnv) = print(io, "AtariEnv($(env.game_path), $(env.obs_type))")
 export get_keys_to_action, restore_state, clone_state
+
+function seed!(env::AtariEnv, seed::Int)
+    env.seed = MersenneTwister(seed)
+    return nothing
+end

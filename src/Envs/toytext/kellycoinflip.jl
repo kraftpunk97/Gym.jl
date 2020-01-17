@@ -57,3 +57,8 @@ end
 function drawcanvas!(env::KellyCoinFlipEnv)
     return "Current wealth: $(env.wealth); Rounds left: $(env.rounds)"
 end
+
+function seed!(env::KellyCointFlip, seed::Unsigned)
+    env.seed = MersenneTwister(seed)
+    return nothing
+end

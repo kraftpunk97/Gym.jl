@@ -48,7 +48,9 @@ function reset!(env::EnvWrapper)
 end
 
 function seed!(env::EnvWrapper, seed::Int=42)
-	env._env.seed = MersenneTwister(seed)
+	seed!(env._env, UInt(seed))
+	println("Resetting...")
+	reset!(env)
 end
 
 render!(env::EnvWrapper, ctx::AbstractCtx) = render!(env._env, ctx)
@@ -76,4 +78,4 @@ function testmode!(env::EnvWrapper, val::Bool=true)
 end
 
 trainable(env::EnvWrapper) = env.train
-game_over(env::EnvWrapper) = env.done
+is_over(env::EnvWrapper) = env.done

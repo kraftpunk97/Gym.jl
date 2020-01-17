@@ -67,3 +67,7 @@ end
 pi = Float32(π)
 
 angle_normalize(x) = ((x + pi) % 2pi + 2pi) % 2pi - pi
+
+function seed!(env::PendulumEnv, seed::Unsigned)
+    env.seed = MersenneTwister(seed)
+end

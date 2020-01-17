@@ -31,8 +31,10 @@ function GuessingGameEnv()
                     guess_count, guess_max, observation, seed)
 end
 
-seed!(env::GuessingGameEnv) = (env.seed = MersenneTwister())
-seed!(env::GuessingGameEnv, int) = (env.seed = MersenneTwister(int))
+function seed!(env::GuessingGameEnv, seed::Unsigned)
+    env.seed = MersenneTwister(seed)
+    return nothing
+end
 
 function reset!(env::GuessingGameEnv)
     env.number = 2env.range * rand(Float32) - env.range

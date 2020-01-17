@@ -79,9 +79,13 @@ function _make(reg::EnvRegistry, id_string, render_mode::Symbol; kwargs...)
     spec = get(reg.env_specs, id_string, nothing)
 
     isnothing(spec) &&
-            (throw(ErrorException("Environment $(id_string) not found in the registry. Please ensure that you've spelled the name correctly.")))
+            (throw(ArgumentError("Environment $(id_string) not found in the registry. Please ensure that you've spelled the name correctly.")))
 
     _make(spec, render_mode; kwargs...)
+end
+
+function _spec_list(reg::EnvRegistry)
+	return keys(reg.env_specs)
 end
 
 registry = EnvRegistry()
@@ -109,3 +113,10 @@ function make(id_string, mode=:no_render, train=true; kwargs...)
 	env, ctx, rt, max_ep_steps = _make(registry, id_string, mode; kwargs...)
 	EnvWrapper(env, ctx, train; reward_threshold=rt, max_episode_steps=max_ep_steps)
 end
+
+"""
+	speclist()
+
+Returns the list of all available environments in the gym.
+"""
+speclist() = _spec_list(registry)

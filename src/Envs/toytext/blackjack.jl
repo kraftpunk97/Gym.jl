@@ -65,9 +65,6 @@ function BlackjackEnv(natural=false)
     BlackjackEnv(action_space, observation_space, natural, [], [], seed)
 end
 
-seed!(env::BlackjackEnv) = (env.seed = MersenneTwister())
-seed!(env::BlackjackEnv, int::Integer) = (env.seed = MersenneTwister(int))
-
 @inline _get_obs(env::BlackjackEnv) = (sum_hand(env.player), env.dealer[1], usable_ace(env.player))
 
 function reset!(env::BlackjackEnv)
@@ -98,4 +95,8 @@ end
 
 function drawcanvas!(env::BlackjackEnv)
     return _get_obs(env)
+end
+
+function seed!(env::BlackjackEnv, seed::Unsigned)
+    env.seed = MersenneTwister(seed)
 end
