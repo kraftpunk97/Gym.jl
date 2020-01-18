@@ -29,25 +29,16 @@ function Ctx(env::PendulumEnv, mode::Symbol=:no_render)
         draw_params = PendulumDrawParams()
         viewer = CairoRGBSurface(draw_params.screen_width, draw_params.screen_height)
 
-        CairoCtx(draw_params, viewer)
-    elseif mode == :human_window
-        draw_params = PendulumDrawParams()
-        viewer = CairoRGBSurface(draw_params.screen_width, draw_params.screen_height)
+function Ctx(::PendulumEnv, ::Val{:human_pane})
+    draw_params = PendulumDrawParams()
+    viewer = CairoRGBSurface(draw_params.screen_width, draw_params.screen_height)
 
-        canvas = @GtkCanvas()
-        canvas.backcc = CairoContext(viewer)
-        win = GtkWindow(canvas, "Pendulum",
-                draw_params.screen_width, draw_params.screen_height; resizable=false)
-        show(canvas)
-        visible(win, false)
-        signal_connect(win, "delete-event") do widget, event
-            ccall((:gtk_widget_hide_on_delete, Gtk.libgtk), Bool, (Ptr{GObject},), win)
-        end
+    CairoCtx(draw_params, viewer)
+end
 
-        GtkCtx(draw_params, canvas, win)
-    elseif mode == :rgb
-        draw_params = PendulumDrawParams()
-        viewer = CairoRGBSurface(draw_params.screen_width, draw_params.screen_height)
+@init @require Gtk="4c0ca9eb-093a-5379-98c5-f87ac0bbbf44" function Ctx(::PendulumEnv, ::Val{human_window})
+    draw_params = PendulumDrawParams()
+    viewer = CairoRGBSurface(draw_params.screen_width, draw_params.screen_height)
 
         RGBCtx(draw_params, viewer)
     elseif mode == :no_render
@@ -55,6 +46,15 @@ function Ctx(env::PendulumEnv, mode::Symbol=:no_render)
     else
         error("Unrecognized mode in Ctx(): $(mode)")
     end
+
+    GtkCtx(draw_params, canvas, win)
+end
+
+function Ctx(::PendulumEnv, ::Val{:rgb})
+    draw_params = PendulumDrawParams()
+    viewer = CairoRGBSurface(draw_params.screen_width, draw_params.screen_height)
+
+    RGBCtx(draw_params, viewer)
 end
 
 function drawcanvas!(env::PendulumEnv, viewer::CairoContext, params::PendulumDrawParams)
