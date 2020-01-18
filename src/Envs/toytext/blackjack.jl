@@ -99,4 +99,5 @@ end
 
 function seed!(env::BlackjackEnv, seed::Unsigned)
     env.seed = MersenneTwister(seed)
+    return nothing
 end

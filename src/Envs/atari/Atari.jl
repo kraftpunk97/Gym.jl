@@ -152,8 +152,3 @@ end
 
 Base.show(io::IO, env::AtariEnv) = print(io, "AtariEnv($(env.game_path), $(env.obs_type))")
 export get_keys_to_action, restore_state, clone_state
-
-function seed!(env::AtariEnv, seed::Int)
-    env.seed = MersenneTwister(seed)
-    return nothing
-end
